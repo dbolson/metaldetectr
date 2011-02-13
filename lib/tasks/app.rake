@@ -5,7 +5,7 @@ namespace :app do
       agent = MetalArchives::Agent.new
 
       if PaginatedSearchResultUrl.count == 0
-        agent.paginated_result_links.each do |paginated_result|
+        agent.paginated_result_urls.each do |paginated_result|
           PaginatedSearchResultUrl.find_or_create_by_url(paginated_result)
         end
       end
@@ -23,7 +23,7 @@ namespace :app do
       if CompletedStep.find_by_step(CompletedStep::AlbumUrlsCollected).nil?
         print 'fetching album urls'
         urls_to_search.each do |paginated_url|
-          album_urls = agent.album_links_from_url(paginated_url.url)
+          album_urls = agent.album_urls(paginated_url.url)
           if album_urls.nil?  # timed-out
             break
           else
