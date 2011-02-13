@@ -1,2 +1,25 @@
-%h1 Releases#index
-%p Find me in app/views/releases/index.html.haml
+%table.releases
+  %tr
+    %th.edit_band
+      band
+    %th.edit_name
+      name
+    %th.edit_us_date
+      us release date
+    %th.edit_euro_date
+      euro release date
+    %th.edit_type
+      release_type
+    %th.edit_label
+      label
+    %th.edit_url
+      URL
+  - @releases.each do |release|
+    %tr
+      %td= release.band
+      %td= release.name
+      %td= release.us_date
+      %td= release.euro_date
+      %td= release.type
+      %td= release.label
+      %td= release.url

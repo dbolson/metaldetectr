@@ -1,7 +1,7 @@
 class CreateCompletedSteps < ActiveRecord::Migration
   def self.up
     create_table :completed_steps do |t|
-      t.string :name
+      t.integer :step
 
       t.timestamps
     end

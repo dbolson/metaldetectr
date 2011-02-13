@@ -9,9 +9,11 @@ gem 'rails3-generators'
 gem 'devise'
 gem 'hpricot'
 gem 'ruby_parser'
+gem 'clockwork'
 gem 'delayed_job'
 gem 'mechanize'
 gem 'fastercsv'
+gem 'metal-archives'
 
 group :test do
   gem 'rspec-rails'
