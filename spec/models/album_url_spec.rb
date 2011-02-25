@@ -1,4 +1,4 @@
 require 'spec_helper'
 
-describe AlbumLink do
+describe AlbumUrl do
 end
