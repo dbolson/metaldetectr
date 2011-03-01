@@ -1,4 +1,4 @@
-require 'metal-detectr'
+require 'metal_detectr'
 
 namespace :app do
   namespace :metal_archives do
@@ -15,8 +15,11 @@ namespace :app do
       MetalDetectr::MetalArchives.complete_album_urls_fetch_if_finished!
     end
 
-    #desc "Fetch the albums from metal-archives.com"
     #task :fetch_album_urls => [:environment, :fetch_paginated_result_urls,:fetch_album_urls] do
-    #end
+    desc "Fetch the albums from metal-archives.com"
+    task :fetch_albums => :environment do
+      album_urls = MetalDetectr::MetalArchives.albums_from_urls
+      MetalDetectr::MetalArchives.create_releases(album_urls)
+    end
   end
 end

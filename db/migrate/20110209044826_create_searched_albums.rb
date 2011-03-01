@@ -1,7 +1,7 @@
 class CreateSearchedAlbums < ActiveRecord::Migration
   def self.up
     create_table :searched_albums do |t|
-      t.integer :album_link_id
+      t.integer :album_url_id
 
       t.timestamps
     end

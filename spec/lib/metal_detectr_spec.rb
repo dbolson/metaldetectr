@@ -1,5 +1,5 @@
 require 'spec_helper'
-require 'metal-detectr'
+require 'metal_detectr'
 
 describe MetalDetectr do
   context "fetching paginated result urls" do
@@ -145,6 +145,62 @@ describe MetalDetectr do
         CompletedStep.should_not_receive(:find_or_create_by_step)
         MetalDetectr::MetalArchives.complete_album_urls_fetch_if_finished!
       end
+    end
+  end
+
+  context "fetching albums from urls" do
+    before do
+      @agent = stub('MetalArchives::Agent')
+      MetalArchives::Agent.stub(:new).and_return(@agent)
+    end
+
+    context "having already searched all the albums" do
+      it "should not search anymore" do
+        CompletedStep.should_receive(:finished_fetching_album_urls?).and_return(true)
+        MetalDetectr::MetalArchives.albums_from_urls
+      end
+    end
+
+    context "having not searched any albums" do
+      it "should start searching from the first album"
+    end
+
+    context "having searched some albums" do
+      it "should start searching from the last album not searched"
+    end
+
+    context "when the site times out" do
+      it "should return a nil album"
+      it "should save the url to search later"
+      it "should stop searching"
+    end
+
+    context "when an already-existing album is found" do
+      it "should not create another album"
+    end
+
+    it "should create an album" do
+      album_url_1 = Factory(:album_url)
+      album_from_site = {
+        :album => 'New Album',
+        :band => 'The Band',
+        :release_type => 'Full-length',
+        :label => 'Foo Bar Records',
+        :release_date => "January 20th, #{Time.now.year}",
+        :url => '/foo?1'
+      }
+      @agent.should_receive(:album_from_url).and_return(album_from_site)
+
+      MetalDetectr::MetalArchives.albums_from_urls
+
+      Release.should have(1).record
+      release = Release.first
+      release.name.should == album_from_site[:album]
+      release.band.should == album_from_site[:band]
+      release.format.should == album_from_site[:release_type]
+      release.label.should == album_from_site[:label]
+      release.url.should == album_from_site[:url]
+      release.us_date.should == Date.parse(album_from_site[:release_date])
     end
   end
 end

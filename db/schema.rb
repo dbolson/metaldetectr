@@ -49,7 +49,7 @@ ActiveRecord::Schema.define(:version => 20110211145951) do
   create_table "releases", :force => true do |t|
     t.string   "name"
     t.string   "band"
-    t.string   "type"
+    t.string   "format"
     t.string   "label"
     t.string   "url"
     t.datetime "us_date"
@@ -59,7 +59,7 @@ ActiveRecord::Schema.define(:version => 20110211145951) do
   end
 
   create_table "searched_albums", :force => true do |t|
-    t.integer  "album_link_id"
+    t.integer  "album_url_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

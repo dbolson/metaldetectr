@@ -3,7 +3,7 @@ class CreateReleases < ActiveRecord::Migration
     create_table :releases do |t|
       t.string :name
       t.string :band
-      t.string :type
+      t.string :format
       t.string :label
       t.string :url
       t.datetime :us_date
