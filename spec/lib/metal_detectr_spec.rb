@@ -283,9 +283,4 @@ describe MetalDetectr do
       end
     end
   end
-
-  it "should test watchr" do
-    result = 1 + 1
-    result.should == 2
-  end
 end
