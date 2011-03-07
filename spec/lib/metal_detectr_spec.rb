@@ -119,7 +119,7 @@ describe MetalDetectr do
     end
 
     context "finished fetching all album urls" do
-      context "but haven't marked this step as complete" do
+      context "but hasn't marked this step as complete" do
         it "should mark this step as complete" do
           step = mock_model(CompletedStep, :step => 1)
           AlbumUrl.stub(:count).and_return(10)
@@ -148,7 +148,7 @@ describe MetalDetectr do
     end
   end
 
-  context "fetching albums from urls" do
+  context "fetching releases from urls" do
     before do
       @agent = stub('MetalArchives::Agent')
       MetalArchives::Agent.stub(:new).and_return(@agent)
@@ -157,7 +157,7 @@ describe MetalDetectr do
     context "having already searched all the albums" do
       it "should not search anymore" do
         CompletedStep.should_receive(:finished_fetching_album_urls?).and_return(true)
-        MetalDetectr::MetalArchives.albums_from_urls
+        MetalDetectr::MetalArchives.releases_from_urls
       end
     end
 
@@ -169,7 +169,7 @@ describe MetalDetectr do
         AlbumUrl.stub(:all).and_return([album_url_1, album_url_2, album_url_3])
         @agent.should_receive(:album_from_url).exactly(3).times.and_return({ :an => 'album' })
 
-        MetalDetectr::MetalArchives.albums_from_urls
+        MetalDetectr::MetalArchives.releases_from_urls
       end
     end
 
@@ -182,7 +182,7 @@ describe MetalDetectr do
         AlbumUrl.stub(:where).and_return([album_url_2, album_url_3])
         @agent.should_receive(:album_from_url).exactly(2).times.and_return({ :an => 'album' })
 
-        MetalDetectr::MetalArchives.albums_from_urls
+        MetalDetectr::MetalArchives.releases_from_urls
       end
     end
 
@@ -195,14 +195,14 @@ describe MetalDetectr do
       it "should stop searching" do
         AlbumUrl.should_receive(:all).and_return([@album_url_1, @album_url_2])
         @agent.should_receive(:album_from_url).once.and_return(nil)
-        MetalDetectr::MetalArchives.albums_from_urls
+        MetalDetectr::MetalArchives.releases_from_urls
       end
 
       it "should save the url to search later" do
         MetalDetectr::MetalArchives.stub(:albums_to_search).and_return([@album_url_1, @album_url_2])
         @agent.stub(:album_from_url).once.and_return(nil)
         SearchedAlbum.should_receive(:find_or_create_by_album_url_id).with(@album_url_1.id)
-        MetalDetectr::MetalArchives.albums_from_urls
+        MetalDetectr::MetalArchives.releases_from_urls
       end
     end
 
@@ -222,7 +222,7 @@ describe MetalDetectr do
         MetalDetectr::MetalArchives.stub(:albums_to_search).and_return([album_url])
 
         lambda do
-          MetalDetectr::MetalArchives.albums_from_urls
+          MetalDetectr::MetalArchives.releases_from_urls
         end.should change(Release, :count).by(0)
       end
     end
@@ -239,7 +239,7 @@ describe MetalDetectr do
       }
       @agent.should_receive(:album_from_url).and_return(album_from_site)
 
-      MetalDetectr::MetalArchives.albums_from_urls
+      MetalDetectr::MetalArchives.releases_from_urls
 
       Release.should have(1).record
       release = Release.first
@@ -249,6 +249,37 @@ describe MetalDetectr do
       release.label.should == album_from_site[:label]
       release.url.should == album_from_site[:url]
       release.us_date.should == Date.parse(album_from_site[:release_date])
+    end
+
+    context "finished fetching all releases" do
+      context "but hasn't marked this step as complete" do
+        it "should mark this step as complete" do
+          step = mock_model(CompletedStep, :step => 2)
+          CompletedStep.stub(:finished_fetching_releases?).and_return(false)
+          AlbumUrl.stub(:last).and_return(mock_model(AlbumUrl).as_null_object)
+          Release.stub(:exists?).and_return(true)
+          CompletedStep.should_receive(:find_or_create_by_step).and_return(step)
+          MetalDetectr::MetalArchives.complete_releases_from_urls_if_finished!
+        end
+      end
+
+      context "and already marked this step as complete" do
+        it "should not mark this step as complete" do
+          CompletedStep.stub(:finished_fetching_releases?).and_return(true)
+          CompletedStep.should_not_receive(:find_or_create_by_step)
+          MetalDetectr::MetalArchives.complete_releases_from_urls_if_finished!
+        end
+      end
+    end
+
+    context "has not finished fetching all releases" do
+      it "should not mark this step as complete" do
+        CompletedStep.stub(:finished_fetching_releases?).and_return(false)
+        AlbumUrl.stub(:last).and_return(mock_model(AlbumUrl).as_null_object)
+        Release.stub(:exists?).and_return(false)
+        CompletedStep.should_not_receive(:find_or_create_by_step)
+        MetalDetectr::MetalArchives.complete_releases_from_urls_if_finished!
+      end
     end
   end
 end

@@ -57,19 +57,29 @@ module MetalDetectr
       end
     end
 
-    def self.albums_from_urls
+    # If last album url is a url of a release, it's already looked at all of them.
+    def self.complete_releases_from_urls_if_finished!
+      unless CompletedStep.finished_fetching_releases?
+        if Release.exists?(:url => AlbumUrl.last.url)
+          CompletedStep.find_or_create_by_step(CompletedStep::ReleasesCollected)
+        end
+      end
+    end
+
+    # Searches through the remaining album urls and saves the new ones. If the site times-out,
+    # mark where the search is for the next time.
+    def self.releases_from_urls
       unless CompletedStep.finished_fetching_album_urls?
         agent = ::MetalArchives::Agent.new
 
         self.albums_to_search.each do |album_url|
           album = agent.album_from_url(album_url.url)
           if album.nil? # timed-out
-            self.search_album_later!(album_url) # TODO: rename model?
+            self.search_album_later!(album_url)
             break
           end
           self.create_release(album)
         end
-        #if all albums are collected, mark as complete
       end
     end
 

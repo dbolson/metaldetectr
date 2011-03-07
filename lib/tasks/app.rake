@@ -18,8 +18,10 @@ namespace :app do
     #task :fetch_album_urls => [:environment, :fetch_paginated_result_urls,:fetch_album_urls] do
     desc "Fetch the albums from metal-archives.com"
     task :fetch_albums => :environment do
-      album_urls = MetalDetectr::MetalArchives.albums_from_urls
-      MetalDetectr::MetalArchives.create_releases(album_urls)
+      #album_urls = MetalDetectr::MetalArchives.albums_from_urls
+      #MetalDetectr::MetalArchives.create_releases(album_urls)
+      MetalDetectr::MetalArchives.albums_from_urls
+      MetalDetectr::MetalArchives.complete_releases_from_urls_if_finished!
     end
   end
 end
