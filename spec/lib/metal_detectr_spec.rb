@@ -150,13 +150,14 @@ describe MetalDetectr do
 
   context "fetching releases from urls" do
     before do
+      CompletedStep.stub(:finished_fetching_album_urls?).and_return(true)
       @agent = stub('MetalArchives::Agent')
       MetalArchives::Agent.stub(:new).and_return(@agent)
     end
 
     context "having already searched all the albums" do
       it "should not search anymore" do
-        CompletedStep.should_receive(:finished_fetching_album_urls?).and_return(true)
+        CompletedStep.should_receive(:finished_fetching_album_urls?).and_return(false)
         MetalDetectr::MetalArchives.releases_from_urls
       end
     end

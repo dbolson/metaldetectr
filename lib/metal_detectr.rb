@@ -18,7 +18,7 @@ module MetalDetectr
       if last_album_url.nil? # start search at beginning
         paginated_urls
       else # start search from last page
-        #puts "starting search from: #{last_album_url.page}"
+        puts "Starting search from: #{last_album_url.page}"
         paginated_urls.slice(last_album_url.page, paginated_urls.length)
       end
     end
@@ -33,10 +33,12 @@ module MetalDetectr
 
         paginated_urls.each do |paginated_url|
           album_urls = agent.album_urls(paginated_url.url)
-          if album_urls.nil?  # timed-out
+          if album_urls.nil?  # timed out
+            puts "MetalDetectr::MetalArchives#fetch_album_urls: timed out!"
             break
           end
           album_urls.each do |album_url|
+            puts "Creating AlbumUrl with page #{paginated_urls.find_index(paginated_url) + 1}"
             AlbumUrl.find_or_create_by_page_and_url(
               :page => paginated_urls.find_index(paginated_url) + 1,
               :url => album_url
@@ -49,37 +51,41 @@ module MetalDetectr
     # Marks the step of fetching the album urls as complete when all the paginated urls have
     # returned the urls for the albums on their pages.
     def self.complete_album_urls_fetch_if_finished!
-      unless CompletedStep.finished_fetching_album_urls?
-        agent = ::MetalArchives::Agent.new
-        if agent.total_albums == AlbumUrl.count
-          CompletedStep.find_or_create_by_step(CompletedStep::AlbumUrlsCollected)
-        end
+      return if CompletedStep.finished_fetching_album_urls?
+      agent = ::MetalArchives::Agent.new
+      if agent.total_albums == AlbumUrl.count
+        puts "MetalDetectr::MetalArchives: completed fetching album urls"
+        CompletedStep.find_or_create_by_step(CompletedStep::AlbumUrlsCollected)
       end
     end
 
     # If last album url is a url of a release, it's already looked at all of them.
     def self.complete_releases_from_urls_if_finished!
-      unless CompletedStep.finished_fetching_releases?
-        if Release.exists?(:url => AlbumUrl.last.url)
-          CompletedStep.find_or_create_by_step(CompletedStep::ReleasesCollected)
-        end
+      if !CompletedStep.finished_fetching_releases? && Release.exists?(:url => AlbumUrl.last.url)
+        puts "MetalDetectr::MetalArchives: completed fetching releases"
+        CompletedStep.find_or_create_by_step(CompletedStep::ReleasesCollected)
       end
     end
 
     # Searches through the remaining album urls and saves the new ones. If the site times-out,
     # mark where the search is for the next time.
     def self.releases_from_urls
-      unless CompletedStep.finished_fetching_album_urls?
-        agent = ::MetalArchives::Agent.new
+      puts "MetalDetectr::MetalArchives#releases_from_urls"
+      return unless CompletedStep.finished_fetching_album_urls?
+      puts "Initializing..."
+      agent = ::MetalArchives::Agent.new
 
-        self.albums_to_search.each do |album_url|
-          album = agent.album_from_url(album_url.url)
-          if album.nil? # timed-out
-            self.search_album_later!(album_url)
-            break
-          end
-          self.create_release(album)
+      puts "Searching..."
+      self.albums_to_search.each do |album_url|
+        puts "Album_url: #{album_url.id}"
+        album = agent.album_from_url(album_url.url)
+        puts "Album: #{album.inspect}"
+        if album.nil? # timed out
+          puts "MetalDetectr::MetalArchives#releases_from_urls: timed out!"
+          self.search_album_later!(album_url)
+          break
         end
+        self.create_release(album)
       end
     end
 
@@ -87,6 +93,7 @@ module MetalDetectr
 
     # Saves the release if it doesn't already exist.
     def self.create_release(album)
+      puts "Creating release: #{album.inspect}"
       Release.find_or_create_by_name_and_band_and_url(
         :name => album[:album],
         :band => album[:band],
@@ -110,6 +117,7 @@ module MetalDetectr
 
     # Save the album url to search later if it doesn't already exist.
     def self.search_album_later!(url)
+      puts "Will search album url #{url.id} later."
       SearchedAlbum.find_or_create_by_album_url_id(url.id)
     end
   end
