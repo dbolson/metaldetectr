@@ -17,6 +17,8 @@ gem 'metal-archives'
 
 group :test do
   gem 'rspec-rails'
+  gem 'watchr'
+  gem 'spork', '~> 0.9.0.rc'
   gem 'factory_girl_rails'
   gem 'rcov'
 end
