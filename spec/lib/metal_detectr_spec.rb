@@ -162,21 +162,69 @@ describe MetalDetectr do
     end
 
     context "having not searched any albums" do
-      it "should start searching from the first album"
+      it "should start searching from the first album" do
+        album_url_1 = mock_model(AlbumUrl).as_null_object
+        album_url_2 = mock_model(AlbumUrl).as_null_object
+        album_url_3 = mock_model(AlbumUrl).as_null_object
+        AlbumUrl.stub(:all).and_return([album_url_1, album_url_2, album_url_3])
+        @agent.should_receive(:album_from_url).exactly(3).times.and_return({ :an => 'album' })
+
+        MetalDetectr::MetalArchives.albums_from_urls
+      end
     end
 
     context "having searched some albums" do
-      it "should start searching from the last album not searched"
+      it "should start searching from the last album not searched" do
+        album_url_1 = mock_model(AlbumUrl).as_null_object
+        album_url_2 = mock_model(AlbumUrl).as_null_object
+        album_url_3 = mock_model(AlbumUrl).as_null_object
+        SearchedAlbum.stub(:last).and_return(album_url_2)
+        AlbumUrl.stub(:where).and_return([album_url_2, album_url_3])
+        @agent.should_receive(:album_from_url).exactly(2).times.and_return({ :an => 'album' })
+
+        MetalDetectr::MetalArchives.albums_from_urls
+      end
     end
 
     context "when the site times out" do
-      it "should return a nil album"
-      it "should save the url to search later"
-      it "should stop searching"
+      before do
+        @album_url_1 = mock_model(AlbumUrl, :url => '/foo')
+        @album_url_2 = mock_model(AlbumUrl)
+      end
+
+      it "should stop searching" do
+        AlbumUrl.should_receive(:all).and_return([@album_url_1, @album_url_2])
+        @agent.should_receive(:album_from_url).once.and_return(nil)
+        MetalDetectr::MetalArchives.albums_from_urls
+      end
+
+      it "should save the url to search later" do
+        MetalDetectr::MetalArchives.stub(:albums_to_search).and_return([@album_url_1, @album_url_2])
+        @agent.stub(:album_from_url).once.and_return(nil)
+        SearchedAlbum.should_receive(:find_or_create_by_album_url_id).with(@album_url_1.id)
+        MetalDetectr::MetalArchives.albums_from_urls
+      end
     end
 
     context "when an already-existing album is found" do
-      it "should not create another album"
+      it "should not create another album" do
+        release = Factory(:release, :format => 'Full-length', :label => 'Foo Records', :us_date => Date.parse('01-02-1982'), :url => '/foo')
+        album_url = mock_model(AlbumUrl).as_null_object
+        album_from_site = {
+          :album => release.name,
+          :band => release.band,
+          :release_type => release.format,
+          :label => release.label,
+          :release_date => release.us_date,
+          :url => release.url
+        }
+        @agent.should_receive(:album_from_url).and_return(album_from_site)
+        MetalDetectr::MetalArchives.stub(:albums_to_search).and_return([album_url])
+
+        lambda do
+          MetalDetectr::MetalArchives.albums_from_urls
+        end.should change(Release, :count).by(0)
+      end
     end
 
     it "should create an album" do

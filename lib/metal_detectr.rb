@@ -63,9 +63,9 @@ module MetalDetectr
 
         self.albums_to_search.each do |album_url|
           album = agent.album_from_url(album_url.url)
-          if album.nil?
+          if album.nil? # timed-out
             self.search_album_later!(album_url) # TODO: rename model?
-            break # timed-out
+            break
           end
           self.create_release(album)
         end
@@ -73,6 +73,9 @@ module MetalDetectr
       end
     end
 
+    private
+
+    # Saves the release if it doesn't already exist.
     def self.create_release(album)
       Release.find_or_create_by_name_and_band_and_url(
         :name => album[:album],
@@ -84,8 +87,8 @@ module MetalDetectr
       )
     end
 
-    private
-
+    # If we were previously searching albums, get all the album urls saved after and including
+    # the previous one. Otherwise, get all the album urls.
     def self.albums_to_search
       album_to_search = SearchedAlbum.last
       if album_to_search.present?
@@ -95,7 +98,9 @@ module MetalDetectr
       end
     end
 
-    # def self.search_album_later!(url)
-    # end
+    # Save the album url to search later if it doesn't already exist.
+    def self.search_album_later!(url)
+      SearchedAlbum.find_or_create_by_album_url_id(url.id)
+    end
   end
 end
