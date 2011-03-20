@@ -72,9 +72,9 @@ describe MetalDetectr do
       before do
         @agent = stub('MetalArchives::Agent')
         MetalArchives::Agent.stub(:new).and_return(@agent)
-        @url_1 = mock_model(PaginatedSearchResultUrl, :url => '/advanced.php?release_year=2011&p=1')
-        @url_2 = mock_model(PaginatedSearchResultUrl, :url => '/advanced.php?release_year=2011&p=2')
-        @url_3 = mock_model(PaginatedSearchResultUrl, :url => '/advanced.php?release_year=2011&p=3')
+        @url_1 = mock_model(PaginatedSearchResultUrl, :url => '/advanced.php?release_year=2011&p=1', :page_number => 1)
+        @url_2 = mock_model(PaginatedSearchResultUrl, :url => '/advanced.php?release_year=2011&p=2', :page_number => 2)
+        @url_3 = mock_model(PaginatedSearchResultUrl, :url => '/advanced.php?release_year=2011&p=3', :page_number => 3)
         CompletedStep.stub(:find_by_step).and_return(nil)
       end
 

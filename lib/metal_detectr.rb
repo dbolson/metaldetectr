@@ -37,10 +37,10 @@ module MetalDetectr
             puts "MetalDetectr::MetalArchives#fetch_album_urls: timed out!"
             break
           end
+          puts "Creating AlbumUrl from page #{paginated_url.page_number}"
           album_urls.each do |album_url|
-            puts "Creating AlbumUrl with page #{paginated_urls.find_index(paginated_url) + 1}"
             AlbumUrl.find_or_create_by_page_and_url(
-              :page => paginated_urls.find_index(paginated_url) + 1,
+              :page => paginated_url.page_number,
               :url => album_url
             )
           end
@@ -70,55 +70,34 @@ module MetalDetectr
     # Searches through the remaining album urls and saves the new ones. If the site times-out,
     # mark where the search is for the next time.
     def self.releases_from_urls
-      puts "MetalDetectr::MetalArchives#releases_from_urls"
       return unless CompletedStep.finished_fetching_album_urls?
-      puts "Initializing..."
       agent = ::MetalArchives::Agent.new
 
       puts "Searching..."
       self.albums_to_search.each do |album_url|
         puts "Album_url: #{album_url.id}"
         album = agent.album_from_url(album_url.url)
-        puts "Album: #{album.inspect}"
         if album.nil? # timed out
           puts "MetalDetectr::MetalArchives#releases_from_urls: timed out!"
-          self.search_album_later!(album_url)
+          SearchedAlbum.save_for_later(album_url)
           break
         end
-        self.create_release(album)
+        puts "Creating release: #{album}"
+        Release.create_from(album)
       end
     end
 
     private
-
-    # Saves the release if it doesn't already exist.
-    def self.create_release(album)
-      puts "Creating release: #{album.inspect}"
-      Release.find_or_create_by_name_and_band_and_url(
-        :name => album[:album],
-        :band => album[:band],
-        :format => album[:release_type],
-        :label => album[:label],
-        :url => album[:url],
-        :us_date => album[:release_date]
-      )
-    end
 
     # If we were previously searching albums, get all the album urls saved after and including
     # the previous one. Otherwise, get all the album urls.
     def self.albums_to_search
       album_to_search = SearchedAlbum.last
       if album_to_search.present?
-        AlbumUrl.where("id >= #{album_to_search.id}")
+        AlbumUrl.where("id >= #{album_to_search.album_url_id}")
       else
         AlbumUrl.all
       end
-    end
-
-    # Save the album url to search later if it doesn't already exist.
-    def self.search_album_later!(url)
-      puts "Will search album url #{url.id} later."
-      SearchedAlbum.find_or_create_by_album_url_id(url.id)
     end
   end
 end

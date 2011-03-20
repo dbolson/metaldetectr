@@ -23,3 +23,6 @@ namespace :app do
     end
   end
 end
+
+# do not search anymore once all releases are searched
+# change rake task name to use release instead of album
