@@ -8,6 +8,7 @@ module MetalDetectr
           PaginatedSearchResultUrl.create(:url => paginated_result)
         end
       end
+      yield if block_given?
     end
 
     # Finds the saved paginated urls to search albums on.
@@ -18,7 +19,7 @@ module MetalDetectr
       if last_album_url.nil? # start search at beginning
         paginated_urls
       else # start search from last page
-        puts "Starting search from: #{last_album_url.page}"
+        ::Rails.logger.info "Starting search from: #{last_album_url.page}"
         paginated_urls.slice(last_album_url.page, paginated_urls.length)
       end
     end
@@ -34,16 +35,17 @@ module MetalDetectr
         paginated_urls.each do |paginated_url|
           album_urls = agent.album_urls(paginated_url.url)
           if album_urls.nil?  # timed out
-            puts "MetalDetectr::MetalArchives#fetch_album_urls: timed out!"
+            ::Rails.logger.info "MetalDetectr::MetalArchives#fetch_album_urls: timed out!"
             break
           end
-          puts "Creating AlbumUrl from page #{paginated_url.page_number}"
+          ::Rails.logger.info "Creating AlbumUrl from page #{paginated_url.page_number}"
           album_urls.each do |album_url|
             AlbumUrl.find_or_create_by_page_and_url(
               :page => paginated_url.page_number,
               :url => album_url
             )
           end
+          yield if block_given? # should only get here after all album_urls get searched successfully
         end
       end
     end
@@ -54,7 +56,7 @@ module MetalDetectr
       return if CompletedStep.finished_fetching_album_urls?
       agent = ::MetalArchives::Agent.new
       if agent.total_albums == AlbumUrl.count
-        puts "MetalDetectr::MetalArchives: completed fetching album urls"
+        ::Rails.logger.info "MetalDetectr::MetalArchives: completed fetching album urls"
         CompletedStep.find_or_create_by_step(CompletedStep::AlbumUrlsCollected)
       end
     end
@@ -62,7 +64,7 @@ module MetalDetectr
     # If last album url is a url of a release, it's already looked at all of them.
     def self.complete_releases_from_urls_if_finished!
       if !CompletedStep.finished_fetching_releases? && Release.exists?(:url => AlbumUrl.last.url)
-        puts "MetalDetectr::MetalArchives: completed fetching releases"
+        ::Rails.logger.info "MetalDetectr::MetalArchives: completed fetching releases"
         CompletedStep.find_or_create_by_step(CompletedStep::ReleasesCollected)
       end
     end
@@ -73,16 +75,14 @@ module MetalDetectr
       return unless CompletedStep.finished_fetching_album_urls?
       agent = ::MetalArchives::Agent.new
 
-      puts "Searching..."
       self.albums_to_search.each do |album_url|
-        puts "Album_url: #{album_url.id}"
         album = agent.album_from_url(album_url.url)
         if album.nil? # timed out
-          puts "MetalDetectr::MetalArchives#releases_from_urls: timed out!"
+          ::Rails.logger.info "MetalDetectr::MetalArchives#releases_from_urls: timed out!"
           SearchedAlbum.save_for_later(album_url)
           break
         end
-        puts "Creating release: #{album}"
+        ::Rails.logger.info "Creating release: #{album}"
         Release.create_from(album)
       end
     end
