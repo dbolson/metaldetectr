@@ -5,6 +5,7 @@ module MetalDetectr
       if PaginatedSearchResultUrl.count == 0
         agent = ::MetalArchives::Agent.new
         agent.paginated_result_urls.each do |paginated_result|
+          Rails.logger.error "paginated_result: #{paginated_result.inspect}"
           PaginatedSearchResultUrl.create(:url => paginated_result)
         end
       end

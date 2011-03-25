@@ -1,5 +1,3 @@
-require 'metal_detectr'
-
 class FindAlbumsJob
   # Scrapes metal-archives.com for releases until all albums are searched.
   # It next finds all the releases on Amazon's US site and European sites to update the release dates if it can.
