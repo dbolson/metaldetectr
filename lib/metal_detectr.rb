@@ -1,26 +1,39 @@
 module MetalDetectr
   class MetalArchives
+    # Gets paginated result urls if needed,
+    # gets the album urls to search from the paginated result urls if needed,
+    # gets all the releases from the album urls if needed.
+    def self.generate_releases
+      self.fetch_paginated_result_urls
+      paginated_urls = self.urls_to_search
+      self.fetch_album_urls(paginated_urls)
+      self.complete_album_urls_fetch_if_finished!
+      self.releases_from_urls
+      self.complete_releases_from_urls_if_finished!
+      # self.Amazon.update_release_dates
+      # self.reset_data
+    end
+
     # If there are no saved paginated result urls, fetch and save them from metal-archives.com.
     def self.fetch_paginated_result_urls
       if PaginatedSearchResultUrl.count == 0
         agent = ::MetalArchives::Agent.new
+
         agent.paginated_result_urls.each do |paginated_result|
-          Rails.logger.error "paginated_result: #{paginated_result.inspect}"
           PaginatedSearchResultUrl.create(:url => paginated_result)
         end
       end
-      yield if block_given?
     end
 
     # Finds the saved paginated urls to search albums on.
     def self.urls_to_search
       paginated_urls = PaginatedSearchResultUrl.all
-
       last_album_url = AlbumUrl.last
+
       if last_album_url.nil? # start search at beginning
         paginated_urls
       else # start search from last page
-        ::Rails.logger.info "Starting search from: #{last_album_url.page}"
+        ::Rails.logger.info "\nStarting search from: #{last_album_url.page}" if last_album_url.page < paginated_urls.length
         paginated_urls.slice(last_album_url.page, paginated_urls.length)
       end
     end
@@ -36,17 +49,16 @@ module MetalDetectr
         paginated_urls.each do |paginated_url|
           album_urls = agent.album_urls(paginated_url.url)
           if album_urls.nil?  # timed out
-            ::Rails.logger.info "MetalDetectr::MetalArchives#fetch_album_urls: timed out!"
+            ::Rails.logger.info "\nMetalDetectr::MetalArchives#fetch_album_urls: timed out!"
             break
           end
-          ::Rails.logger.info "Creating AlbumUrl from page #{paginated_url.page_number}"
+          ::Rails.logger.info "\nCreating AlbumUrl from page #{paginated_url.page_number}"
           album_urls.each do |album_url|
             AlbumUrl.find_or_create_by_page_and_url(
               :page => paginated_url.page_number,
               :url => album_url
             )
           end
-          yield if block_given? # should only get here after all album_urls get searched successfully
         end
       end
     end
@@ -56,8 +68,9 @@ module MetalDetectr
     def self.complete_album_urls_fetch_if_finished!
       return if CompletedStep.finished_fetching_album_urls?
       agent = ::MetalArchives::Agent.new
+
       if agent.total_albums == AlbumUrl.count
-        ::Rails.logger.info "MetalDetectr::MetalArchives: completed fetching album urls"
+        ::Rails.logger.info "\nMetalDetectr::MetalArchives: completed fetching album urls"
         CompletedStep.find_or_create_by_step(CompletedStep::AlbumUrlsCollected)
       end
     end
@@ -65,7 +78,7 @@ module MetalDetectr
     # If last album url is a url of a release, it's already looked at all of them.
     def self.complete_releases_from_urls_if_finished!
       if !CompletedStep.finished_fetching_releases? && Release.exists?(:url => AlbumUrl.last.url)
-        ::Rails.logger.info "MetalDetectr::MetalArchives: completed fetching releases"
+        ::Rails.logger.info "\nMetalDetectr::MetalArchives: completed fetching releases"
         CompletedStep.find_or_create_by_step(CompletedStep::ReleasesCollected)
       end
     end
@@ -79,11 +92,11 @@ module MetalDetectr
       self.albums_to_search.each do |album_url|
         album = agent.album_from_url(album_url.url)
         if album.nil? # timed out
-          ::Rails.logger.info "MetalDetectr::MetalArchives#releases_from_urls: timed out!"
+          ::Rails.logger.info "\nMetalDetectr::MetalArchives#releases_from_urls: timed out!"
           SearchedAlbum.save_for_later(album_url)
           break
         end
-        ::Rails.logger.info "Creating release: #{album}"
+        ::Rails.logger.info "\nCreating release: #{album}"
         Release.create_from(album)
       end
     end
@@ -100,5 +113,16 @@ module MetalDetectr
         AlbumUrl.all
       end
     end
+
+    # Erase data used to generate releases for new search for metal-archives.com.
+    def reset_metal_archives_data
+      ::Rails.logger.info "\nCleaning up old data."
+      AlbumUrl.delete_all
+      CompletedStep.delete_all
+      PaginatedSearchResultUrl.delete_all
+      SearchedAlbum.delete_all
+      ::Rails.logger.info "\nData reset."
+    end
+
   end
 end
