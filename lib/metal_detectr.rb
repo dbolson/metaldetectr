@@ -123,6 +123,5 @@ module MetalDetectr
       SearchedAlbum.delete_all
       ::Rails.logger.info "\nData reset."
     end
-
   end
 end
