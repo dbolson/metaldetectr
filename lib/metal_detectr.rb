@@ -11,7 +11,8 @@ module MetalDetectr
         self.complete_album_urls_fetch_if_finished!
         self.releases_from_urls
         self.complete_releases_from_urls_if_finished!
-        # self.Amazon.update_release_dates
+        # only do this when all the releases are collected
+        MetalDetectr::AmazonSearch.update_release_dates unless CompletedStep.finished_fetching_releases?
       else
         # self.reset_data
       end
@@ -101,6 +102,15 @@ module MetalDetectr
         end
         ::Rails.logger.info "\nCreating release: #{album}"
         Release.create_from(album)
+      end
+    end
+
+    def self.update_release_dates
+      Release.all.each do |release|
+        us_release_date = MetalDetectr::AmazonSearch.find_us_release_date(release)
+        euro_release_date = MetalDetectr::AmazonSearch.find_euro_release_date(release)
+        release.update_attribute(:us_date, us_release_date) unless us_release_date.nil?
+        release.update_attribute(:euro_date, euro_release_date) unless euro_release_date.nil?
       end
     end
 

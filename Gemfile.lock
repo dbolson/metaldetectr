@@ -28,6 +28,9 @@ GEM
       activemodel (= 3.0.5)
       activesupport (= 3.0.5)
     activesupport (3.0.5)
+    amazon-ecs (1.2.1)
+      hpricot (>= 0.4)
+      ruby-hmac (>= 0.3.2)
     arel (2.0.9)
     bcrypt-ruby (2.1.4)
     builder (2.1.2)
@@ -109,6 +112,7 @@ GEM
       activesupport (~> 3.0)
       railties (~> 3.0)
       rspec (~> 2.5.0)
+    ruby-hmac (0.4.0)
     ruby_parser (2.0.6)
       sexp_processor (~> 3.0)
     sexp_processor (3.0.5)
@@ -126,6 +130,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  amazon-ecs
   clockwork
   delayed_job
   devise

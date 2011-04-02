@@ -2,7 +2,7 @@ require 'spec_helper'
 require 'metal_detectr'
 
 describe MetalDetectr do
-  context "fetching paginated result urls" do
+  describe "fetching paginated result urls" do
     before do
       @agent = stub('MetalArchives::Agent')
       MetalArchives::Agent.stub(:new).and_return(@agent)
@@ -30,7 +30,7 @@ describe MetalDetectr do
     end
   end
 
-  context "finding paginated urls to search" do
+  describe "finding paginated urls to search" do
     before do
       @url_1 = mock_model(PaginatedSearchResultUrl, :page => 1)
       @url_2 = mock_model(PaginatedSearchResultUrl, :page => 2)
@@ -60,7 +60,7 @@ describe MetalDetectr do
     end
   end
 
-  context "fetching album urls" do
+  describe "fetching album urls" do
     context "when all urls have been collected" do
       it "should be nil" do
         CompletedStep.stub(:find_by_step).and_return(mock_model(CompletedStep))
@@ -111,7 +111,7 @@ describe MetalDetectr do
     end
   end
 
-  context "checking if all album urls are fetched" do
+  describe "checking if all album urls are fetched" do
     before do
       @agent = stub('MetalArchives::Agent')
       MetalArchives::Agent.stub(:new).and_return(@agent)
@@ -148,7 +148,7 @@ describe MetalDetectr do
     end
   end
 
-  context "fetching releases from urls" do
+  describe "fetching releases from urls" do
     before do
       CompletedStep.stub(:finished_fetching_album_urls?).and_return(true)
       @agent = stub('MetalArchives::Agent')
@@ -281,6 +281,38 @@ describe MetalDetectr do
         CompletedStep.should_not_receive(:find_or_create_by_step)
         MetalDetectr::MetalArchives.complete_releases_from_urls_if_finished!
       end
+    end
+  end
+
+  describe "updates the release dates" do
+    it "should update the US release date for the releases" do
+      release_1 = Factory(:release, :us_date => '01/02/2010')
+      release_2 = Factory(:release, :us_date => '01/02/2010')
+
+      MetalDetectr::AmazonSearch.stub(:find_euro_release_date)
+      MetalDetectr::AmazonSearch.should_receive(:find_us_release_date).with(release_1).and_return('02/02/2010')
+      MetalDetectr::AmazonSearch.should_receive(:find_us_release_date).with(release_2).and_return('02/03/2010')
+      MetalDetectr::MetalArchives.update_release_dates
+      release_1.reload
+      release_2.reload
+
+      release_1.us_date.should == Date.parse('02/02/2010')
+      release_2.us_date.should == Date.parse('02/03/2010')
+    end
+
+    it "should update the European release date for the releases" do
+      release_1 = Factory(:release, :euro_date => '01/02/2010')
+      release_2 = Factory(:release, :euro_date => '01/02/2010')
+
+      MetalDetectr::AmazonSearch.stub(:find_us_release_date)
+      MetalDetectr::AmazonSearch.should_receive(:find_euro_release_date).with(release_1).and_return('02/02/2010')
+      MetalDetectr::AmazonSearch.should_receive(:find_euro_release_date).with(release_2).and_return('02/03/2010')
+      MetalDetectr::MetalArchives.update_release_dates
+      release_1.reload
+      release_2.reload
+
+      release_1.euro_date.should == Date.parse('02/02/2010')
+      release_2.euro_date.should == Date.parse('02/03/2010')
     end
   end
 end

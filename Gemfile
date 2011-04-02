@@ -14,6 +14,7 @@ gem 'delayed_job'
 gem 'mechanize'
 gem 'fastercsv'
 gem 'metal-archives'
+gem 'amazon-ecs'
 
 group :test do
   gem 'rspec-rails'
