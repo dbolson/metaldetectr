@@ -4,14 +4,17 @@ module MetalDetectr
     # gets the album urls to search from the paginated result urls if needed,
     # gets all the releases from the album urls if needed.
     def self.generate_releases
-      self.fetch_paginated_result_urls
-      paginated_urls = self.urls_to_search
-      self.fetch_album_urls(paginated_urls)
-      self.complete_album_urls_fetch_if_finished!
-      self.releases_from_urls
-      self.complete_releases_from_urls_if_finished!
-      # self.Amazon.update_release_dates
-      # self.reset_data
+      unless CompletedStep.finished_fetching_releases?
+        self.fetch_paginated_result_urls
+        paginated_urls = self.urls_to_search
+        self.fetch_album_urls(paginated_urls)
+        self.complete_album_urls_fetch_if_finished!
+        self.releases_from_urls
+        self.complete_releases_from_urls_if_finished!
+        # self.Amazon.update_release_dates
+      else
+        # self.reset_data
+      end
     end
 
     # If there are no saved paginated result urls, fetch and save them from metal-archives.com.
