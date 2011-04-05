@@ -34,9 +34,21 @@ module MetalDetectr
       search_results.items.each do |item|
         if formatted_attribute(item.get('itemattributes/artist')) == formatted_attribute(release.band) &&
            formatted_attribute(item.get('itemattributes/title')) == formatted_attribute(release.name)
-          return item.get('itemattributes/releasedate')
+          #return item.get('itemattributes/releasedate')
+          release_date = item.get('itemattributes/releasedate')
+
+          return release_date unless release_date.nil?
+          original_release_date = item.get('itemattributes/originalreleasedate')
+
+          unless original_release_date.nil?
+            puts "\n++++++++++++++++++++++++++++++++++++++++++++++++++++"
+            puts "release_date, #{release_date.inspect}, failed, but original_release_date works: #{original_release_date.inspect}"
+            puts "++++++++++++++++++++++++++++++++++++++++++++++++++++\n"
+            return original_release_date
+          end
         end
       end
+      nil
     end    
 
     # Strips out "The" if it exists, removes leading and trailing whitespace, and down cases, othewise it return ''.

@@ -4,7 +4,7 @@ module MetalDetectr
     # gets the album urls to search from the paginated result urls if needed,
     # gets all the releases from the album urls if needed.
     def self.generate_releases
-      unless CompletedStep.finished_fetching_releases?
+      if !CompletedStep.finished_fetching_releases?
         self.fetch_paginated_result_urls
         paginated_urls = self.urls_to_search
         self.fetch_album_urls(paginated_urls)
@@ -12,8 +12,8 @@ module MetalDetectr
         self.releases_from_urls
         self.complete_releases_from_urls_if_finished!
         # only do this when all the releases are collected
-        MetalDetectr::AmazonSearch.update_release_dates unless CompletedStep.finished_fetching_releases?
       else
+        self.update_release_dates #unless CompletedStep.finished_fetching_releases?
         # self.reset_data
       end
     end
@@ -109,8 +109,16 @@ module MetalDetectr
       Release.all.each do |release|
         us_release_date = MetalDetectr::AmazonSearch.find_us_release_date(release)
         euro_release_date = MetalDetectr::AmazonSearch.find_euro_release_date(release)
-        release.update_attribute(:us_date, us_release_date) unless us_release_date.nil?
-        release.update_attribute(:euro_date, euro_release_date) unless euro_release_date.nil?
+
+        unless us_release_date.nil?
+          Rails.logger.info "updating US release date from amazon.com for #{release.id} to: #{us_release_date.inspect}"
+          release.update_attribute(:us_date, us_release_date)
+        end
+
+        unless euro_release_date.nil?
+          Rails.logger.info "updating European release date from amazon.com for #{release.id} to: #{euro_release_date.inspect}"
+          release.update_attribute(:euro_date, euro_release_date)
+        end
       end
     end
 
