@@ -32,4 +32,20 @@ describe CompletedStep do
       end
     end
   end
+
+  context "checking if all release dates have been updated from Amazon" do
+    context "when they have" do
+      it "should be true" do
+        CompletedStep.should_receive(:find_by_step).with(CompletedStep::ReleasesUpdatedFromAmazon).and_return(mock_model(CompletedStep))
+        CompletedStep.finished_updating_releases_from_amazon?.should be_true
+      end
+    end
+
+    context "when they haven't" do
+      it "should be false" do
+        CompletedStep.should_receive(:find_by_step).with(CompletedStep::ReleasesUpdatedFromAmazon).and_return(nil)
+        CompletedStep.finished_updating_releases_from_amazon?.should be_false
+      end
+    end
+  end
 end

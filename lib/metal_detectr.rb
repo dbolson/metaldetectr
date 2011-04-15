@@ -97,7 +97,7 @@ module MetalDetectr
         album = agent.album_from_url(album_url.url)
         if album.nil? # timed out
           ::Rails.logger.info "\nMetalDetectr::MetalArchives#releases_from_urls: timed out!"
-          SearchedAlbum.save_for_later(album_url)
+          SearchedRelease.save_for_later(album_url)
           break
         end
         ::Rails.logger.info "\nCreating release: #{album}"
@@ -106,18 +106,32 @@ module MetalDetectr
     end
 
     def self.update_release_dates
-      Release.all.each do |release|
-        us_release_date = MetalDetectr::AmazonSearch.find_us_release_date(release)
-        euro_release_date = MetalDetectr::AmazonSearch.find_euro_release_date(release)
+      if CompletedStep.finished_fetching_releases? && !CompletedStep.finished_updating_releases_from_amazon?
+        self.release_dates_to_search_from_amazon.each do |release|
+          begin
+            us_release_date = MetalDetectr::AmazonSearch.find_us_release_date(release)
+            euro_release_date = MetalDetectr::AmazonSearch.find_euro_release_date(release)
+          rescue Exception => e          
+            Rails.logger.info "Error accessing amazon.com: #{e}"
+            SearchedAmazonDateRelease.save_for_later(release)
+            break
+          end
 
-        unless us_release_date.nil?
-          Rails.logger.info "updating US release date from amazon.com for #{release.id} to: #{us_release_date.inspect}"
-          release.update_attribute(:us_date, us_release_date)
-        end
+          attributes_to_update = {}
+          unless us_release_date.nil?
+            Rails.logger.info "updating US release date from amazon.com for #{release.id} to: #{us_release_date.inspect}"
+            #release.update_attribute(:us_date, us_release_date)
+            attributes_to_update[:us_date] = us_release_date
+          end
 
-        unless euro_release_date.nil?
-          Rails.logger.info "updating European release date from amazon.com for #{release.id} to: #{euro_release_date.inspect}"
-          release.update_attribute(:euro_date, euro_release_date)
+          unless euro_release_date.nil?
+            Rails.logger.info "updating European release date from amazon.com for #{release.id} to: #{euro_release_date.inspect}"
+            #release.update_attribute(:euro_date, euro_release_date)
+            attributes_to_update[:euro_date] = euro_release_date
+          end
+          release.update_attributes(attributes_to_update)
+
+          self.complete_release_dates_update_if_finished!(Release.last, release)
         end
       end
     end
@@ -127,7 +141,7 @@ module MetalDetectr
     # If we were previously searching albums, get all the album urls saved after and including
     # the previous one. Otherwise, get all the album urls.
     def self.albums_to_search
-      album_to_search = SearchedAlbum.last
+      album_to_search = SearchedRelease.last
       if album_to_search.present?
         AlbumUrl.where("id >= #{album_to_search.album_url_id}")
       else
@@ -135,14 +149,35 @@ module MetalDetectr
       end
     end
 
+    # If we were previously searching release dates on amazon, get all the album urls saved after and including
+    # the previous one. Otherwise, get all the album urls.
+    def self.release_dates_to_search_from_amazon
+      release_to_search = SearchedAmazonDateRelease.last
+      if release_to_search.present?
+        Release.where("id >= #{release_to_search.release_id}")
+      else
+        Release.all
+      end
+    end
+
     # Erase data used to generate releases for new search for metal-archives.com.
     def reset_metal_archives_data
       ::Rails.logger.info "\nCleaning up old data."
-      AlbumUrl.delete_all
-      CompletedStep.delete_all
-      PaginatedSearchResultUrl.delete_all
-      SearchedAlbum.delete_all
+      AlbumUrl.destroy_all
+      CompletedStep.destroy_all
+      PaginatedSearchResultUrl.destroy_all
+      SearchedRelease.destroy_all
+      SearchedAmazonDateRelease.destroy_all
       ::Rails.logger.info "\nData reset."
+    end
+
+    # Marks the step of updating the album urls as complete when all the releases have
+    # checked for updated release dates on Amazon.
+    def self.complete_release_dates_update_if_finished!(last_release, current_release)
+      if last_release.id == current_release.id
+        ::Rails.logger.info "\nMetalDetectr::MetalArchives: completed updating release dates from Amazon"
+        CompletedStep.find_or_create_by_step(CompletedStep::ReleasesUpdatedFromAmazon)
+      end
     end
   end
 end

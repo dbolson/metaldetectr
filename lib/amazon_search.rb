@@ -34,7 +34,6 @@ module MetalDetectr
       search_results.items.each do |item|
         if formatted_attribute(item.get('itemattributes/artist')) == formatted_attribute(release.band) &&
            formatted_attribute(item.get('itemattributes/title')) == formatted_attribute(release.name)
-          #return item.get('itemattributes/releasedate')
           release_date = item.get('itemattributes/releasedate')
 
           return release_date unless release_date.nil?

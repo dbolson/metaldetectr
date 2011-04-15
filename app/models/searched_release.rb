@@ -1,4 +1,4 @@
-class SearchedAlbum < ActiveRecord::Base
+class SearchedRelease < ActiveRecord::Base
   belongs_to :album_url
 
   # Save the album url to search later if it doesn't already exist.

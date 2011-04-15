@@ -179,7 +179,7 @@ describe MetalDetectr do
         album_url_1 = mock_model(AlbumUrl).as_null_object
         album_url_2 = mock_model(AlbumUrl).as_null_object
         album_url_3 = mock_model(AlbumUrl).as_null_object
-        SearchedAlbum.stub(:last).and_return(album_url_2)
+        SearchedRelease.stub(:last).and_return(album_url_2)
         AlbumUrl.stub(:where).and_return([album_url_2, album_url_3])
         @agent.should_receive(:album_from_url).exactly(2).times.and_return({ :an => 'album' })
 
@@ -202,7 +202,7 @@ describe MetalDetectr do
       it "should save the url to search later" do
         MetalDetectr::MetalArchives.stub(:albums_to_search).and_return([@album_url_1, @album_url_2])
         @agent.stub(:album_from_url).once.and_return(nil)
-        SearchedAlbum.should_receive(:find_or_create_by_album_url_id).with(@album_url_1.id)
+        SearchedRelease.should_receive(:find_or_create_by_album_url_id).with(@album_url_1.id)
         MetalDetectr::MetalArchives.releases_from_urls
       end
     end
@@ -289,6 +289,7 @@ describe MetalDetectr do
       release_1 = Factory(:release, :us_date => '01/02/2010')
       release_2 = Factory(:release, :us_date => '01/02/2010')
 
+      CompletedStep.stub(:finished_fetching_releases?).and_return(true)
       MetalDetectr::AmazonSearch.stub(:find_euro_release_date)
       MetalDetectr::AmazonSearch.should_receive(:find_us_release_date).with(release_1).and_return('02/02/2010')
       MetalDetectr::AmazonSearch.should_receive(:find_us_release_date).with(release_2).and_return('02/03/2010')
@@ -304,6 +305,7 @@ describe MetalDetectr do
       release_1 = Factory(:release, :euro_date => '01/02/2010')
       release_2 = Factory(:release, :euro_date => '01/02/2010')
 
+      CompletedStep.stub(:finished_fetching_releases?).and_return(true)
       MetalDetectr::AmazonSearch.stub(:find_us_release_date)
       MetalDetectr::AmazonSearch.should_receive(:find_euro_release_date).with(release_1).and_return('02/02/2010')
       MetalDetectr::AmazonSearch.should_receive(:find_euro_release_date).with(release_2).and_return('02/03/2010')
@@ -313,6 +315,38 @@ describe MetalDetectr do
 
       release_1.euro_date.should == Date.parse('02/02/2010')
       release_2.euro_date.should == Date.parse('02/03/2010')
+    end
+
+    context "when finished updating all release dates" do
+      it "should mark the step as complete" do
+        release_1 = Factory(:release)
+        release_2 = Factory(:release)
+        CompletedStep.stub(:finished_fetching_releases?).and_return(true)
+        MetalDetectr::AmazonSearch.stub(:find_us_release_date)
+        MetalDetectr::AmazonSearch.stub(:find_euro_release_date)
+        MetalDetectr::MetalArchives.should_receive(:complete_release_dates_update_if_finished!).with(release_2, release_1).and_return(false)
+        MetalDetectr::MetalArchives.should_receive(:complete_release_dates_update_if_finished!).with(release_2, release_2).and_return(true)
+        MetalDetectr::MetalArchives.update_release_dates
+      end
+    end
+
+    context "when stopped before updating all release dates" do
+      it "should not mark the step as complete" do
+        MetalDetectr::MetalArchives.update_release_dates
+      end
+    end
+
+    context "when not done collecting releases" do
+      it "should not update the releases" do
+        CompletedStep.stub(:finished_fetching_releases?).and_return(false)
+        MetalDetectr::AmazonSearch.should_not_receive(:find_us_release_date)
+        MetalDetectr::AmazonSearch.should_not_receive(:find_euro_release_date)
+        MetalDetectr::MetalArchives.update_release_dates
+      end
+    end
+
+    context "when already done updating the release dates" do
+      it "should not update the releases"
     end
   end
 end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110211145951) do
+ActiveRecord::Schema.define(:version => 20110413032301) do
 
   create_table "album_urls", :force => true do |t|
     t.integer  "page"
@@ -20,7 +20,7 @@ ActiveRecord::Schema.define(:version => 20110211145951) do
   end
 
   create_table "completed_steps", :force => true do |t|
-    t.integer  "step"
+    t.string   "step"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -58,7 +58,13 @@ ActiveRecord::Schema.define(:version => 20110211145951) do
     t.datetime "updated_at"
   end
 
-  create_table "searched_albums", :force => true do |t|
+  create_table "searched_amazon_date_releases", :force => true do |t|
+    t.integer  "release_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "searched_releases", :force => true do |t|
     t.integer  "album_url_id"
     t.datetime "created_at"
     t.datetime "updated_at"
