@@ -108,11 +108,12 @@ module MetalDetectr
     def self.update_release_dates
       if CompletedStep.finished_fetching_releases? && !CompletedStep.finished_updating_releases_from_amazon?
         self.release_dates_to_search_from_amazon.each do |release|
+          ::Rails.logger.info "Checking Amazon for release #{release.id}."
           begin
             us_release_date = MetalDetectr::AmazonSearch.find_us_release_date(release)
             euro_release_date = MetalDetectr::AmazonSearch.find_euro_release_date(release)
           rescue Exception => e          
-            Rails.logger.info "Error accessing amazon.com: #{e}"
+            ::Rails.logger.info "Error accessing amazon.com: #{e}"
             SearchedAmazonDateRelease.save_for_later(release)
             break
           end

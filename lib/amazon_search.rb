@@ -32,6 +32,7 @@ module MetalDetectr
       return nil if search_results.has_error?
 
       search_results.items.each do |item|
+        #sleep 0.5 # needed because amazon will return 503 if there are too many requests per second
         if formatted_attribute(item.get('itemattributes/artist')) == formatted_attribute(release.band) &&
            formatted_attribute(item.get('itemattributes/title')) == formatted_attribute(release.name)
           release_date = item.get('itemattributes/releasedate')
