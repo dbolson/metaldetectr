@@ -282,6 +282,17 @@ describe MetalDetectr do
         MetalDetectr::MetalArchives.complete_releases_from_urls_if_finished!
       end
     end
+
+    context "with a empty release" do
+      it "should not mark this step as complete" do
+        CompletedStep.stub(:finished_fetching_releases?).and_return(false)
+        AlbumUrl.stub(:last).and_return(nil)
+        Release.stub(:exists?).and_return(true)
+        CompletedStep.should_not_receive(:find_or_create_by_step)
+        MetalDetectr::MetalArchives.complete_releases_from_urls_if_finished!
+        1.should == 2
+      end
+    end
   end
 
   describe "updates the release dates" do
@@ -293,7 +304,7 @@ describe MetalDetectr do
       MetalDetectr::AmazonSearch.stub(:find_euro_release_date)
       MetalDetectr::AmazonSearch.should_receive(:find_us_release_date).with(release_1).and_return('02/02/2010')
       MetalDetectr::AmazonSearch.should_receive(:find_us_release_date).with(release_2).and_return('02/03/2010')
-      MetalDetectr::MetalArchives.update_release_dates
+      MetalDetectr::MetalArchives.update_release_dates_from_amazon
       release_1.reload
       release_2.reload
 
@@ -309,7 +320,7 @@ describe MetalDetectr do
       MetalDetectr::AmazonSearch.stub(:find_us_release_date)
       MetalDetectr::AmazonSearch.should_receive(:find_euro_release_date).with(release_1).and_return('02/02/2010')
       MetalDetectr::AmazonSearch.should_receive(:find_euro_release_date).with(release_2).and_return('02/03/2010')
-      MetalDetectr::MetalArchives.update_release_dates
+      MetalDetectr::MetalArchives.update_release_dates_from_amazon
       release_1.reload
       release_2.reload
 
@@ -326,13 +337,13 @@ describe MetalDetectr do
         MetalDetectr::AmazonSearch.stub(:find_euro_release_date)
         MetalDetectr::MetalArchives.should_receive(:complete_release_dates_update_if_finished!).with(release_2, release_1).and_return(false)
         MetalDetectr::MetalArchives.should_receive(:complete_release_dates_update_if_finished!).with(release_2, release_2).and_return(true)
-        MetalDetectr::MetalArchives.update_release_dates
+        MetalDetectr::MetalArchives.update_release_dates_from_amazon
       end
     end
 
     context "when stopped before updating all release dates" do
       it "should not mark the step as complete" do
-        MetalDetectr::MetalArchives.update_release_dates
+        MetalDetectr::MetalArchives.update_release_dates_from_amazon
       end
     end
 
@@ -341,7 +352,7 @@ describe MetalDetectr do
         CompletedStep.stub(:finished_fetching_releases?).and_return(false)
         MetalDetectr::AmazonSearch.should_not_receive(:find_us_release_date)
         MetalDetectr::AmazonSearch.should_not_receive(:find_euro_release_date)
-        MetalDetectr::MetalArchives.update_release_dates
+        MetalDetectr::MetalArchives.update_release_dates_from_amazon
       end
     end
 
