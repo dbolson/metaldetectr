@@ -10,14 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110413032301) do
-
-  create_table "album_urls", :force => true do |t|
-    t.integer  "page"
-    t.string   "url"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
+ActiveRecord::Schema.define(:version => 20110413030154) do
 
   create_table "completed_steps", :force => true do |t|
     t.string   "step"
@@ -40,18 +33,13 @@ ActiveRecord::Schema.define(:version => 20110413032301) do
 
   add_index "delayed_jobs", ["priority", "run_at"], :name => "delayed_jobs_priority"
 
-  create_table "paginated_search_result_urls", :force => true do |t|
-    t.string   "url"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
   create_table "releases", :force => true do |t|
     t.string   "name"
     t.string   "band"
     t.string   "format"
     t.string   "label"
     t.string   "url"
+    t.string   "country"
     t.datetime "us_date"
     t.datetime "euro_date"
     t.datetime "created_at"
@@ -64,16 +52,9 @@ ActiveRecord::Schema.define(:version => 20110413032301) do
     t.datetime "updated_at"
   end
 
-  create_table "searched_releases", :force => true do |t|
-    t.integer  "album_url_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
   create_table "users", :force => true do |t|
     t.string   "email",                               :default => "", :null => false
     t.string   "encrypted_password",   :limit => 128, :default => "", :null => false
-    t.string   "password_salt",                       :default => "", :null => false
     t.string   "reset_password_token"
     t.string   "remember_token"
     t.datetime "remember_created_at"
@@ -82,6 +63,7 @@ ActiveRecord::Schema.define(:version => 20110413032301) do
     t.datetime "last_sign_in_at"
     t.string   "current_sign_in_ip"
     t.string   "last_sign_in_ip"
+    t.string   "password_salt"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

@@ -6,6 +6,7 @@ class CreateReleases < ActiveRecord::Migration
       t.string :format
       t.string :label
       t.string :url
+      t.string :country
       t.datetime :us_date
       t.datetime :euro_date
 

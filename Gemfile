@@ -11,9 +11,8 @@ gem 'hpricot'
 gem 'ruby_parser'
 gem 'clockwork'
 gem 'delayed_job'
-gem 'mechanize'
 gem 'fastercsv'
-gem 'metal-archives'
+gem 'metal-archives', '~> 0.2'
 gem 'amazon-ecs'
 
 group :test do

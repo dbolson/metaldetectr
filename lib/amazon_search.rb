@@ -1,3 +1,5 @@
+require 'amazon/ecs'
+
 module MetalDetectr
   class AmazonSearch
     Amazon::Ecs.options = {
@@ -7,6 +9,7 @@ module MetalDetectr
 
     # Searches amazon.com for the release to find the US release date.
     def self.find_us_release_date(release)
+      ::Rails.logger.info "AmazonSearch#find_us_release_date"
       self.search_response_groups_for_release_date(release)
     end
 
