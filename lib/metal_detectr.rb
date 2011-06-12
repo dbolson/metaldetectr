@@ -1,3 +1,5 @@
+#require 'amazon_search'
+
 module MetalDetectr
   class MetalArchives
     def self.generate_releases

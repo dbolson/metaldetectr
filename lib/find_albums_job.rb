@@ -17,3 +17,11 @@ end
 
 # rake jobs:work
 # bundle exec clockwork lib/clock.rb
+
+#generate list from metal archives
+#generate dates from amazon
+#show list
+#user
+#  provides last.fm credentials
+#  get list of favorite/recommended bands
+#  filter to only show those bands' releases
