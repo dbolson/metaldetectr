@@ -25,3 +25,7 @@ end
 #  provides last.fm credentials
 #  get list of favorite/recommended bands
 #  filter to only show those bands' releases
+
+#last.fm
+#Your API Key is 02eabadbf626b4e166ff7505bb78cac8
+#Your secret is a9562ce4bbfcef5935152c5063deb668

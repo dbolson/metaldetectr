@@ -1,25 +1,27 @@
+=# render :partial => 'releases/new_form'
+=# render :partial => 'releases/search'
+=# render :partial => 'releases/pagination', :locals => { :position => 'top' }
+
+#month_select
+  =# select_for_release_month
+
+= Release.order('us_date ASC').first.us_date.strftime('%B %Y')
+= Release.order('us_date DESC').first.us_date.strftime('%B %Y')
+
 %table.releases
   %tr
-    %th.edit_band
-      band
-    %th.edit_name
-      name
-    %th.edit_us_date
-      us release date
-    %th.edit_euro_date
-      euro release date
-    %th.edit_type
-      release_type
-    %th.edit_label
-      label
-    %th.edit_url
-      URL
+    %th.edit_band= link_to_sort('band', params)
+    %th.edit_name= link_to_sort('name', params)
+    %th.edit_us_release_date= link_to_sort('us_date', params.merge(:column_name => 'US date'))
+    %th.edit_euro_release_date= link_to_sort('euro_date', params.merge(:column_name => 'Euro date'))
+    %th.edit_release_type= link_to_sort('format', params)
+    %th.edit_label= link_to_sort('label', params)
+    %th.edit_url URL
+    -# if admin?
+      %th Actions
+
+%table.releases
   - @releases.each do |release|
-    %tr
-      %td= release.band
-      %td= release.name
-      %td= release.us_date
-      %td= release.euro_date
-      %td= release.type
-      %td= release.label
-      %td= release.url
+    = render release
+
+=# render :partial => 'releases/pagination', :locals => { :position => 'bottom' }

@@ -1,9 +1,6 @@
-#require 'amazon_search'
-
 module MetalDetectr
   class MetalArchives
     def self.generate_releases
-
       if CompletedStep.finished_fetching_releases?
         # only do this when all the releases are collected
         if CompletedStep.finished_updating_releases_from_amazon?
@@ -19,10 +16,10 @@ module MetalDetectr
           album_page.each do |album|
             if album[0].match(::MetalArchives::Agent::NO_BAND_REGEXP).nil?
               Release.create(
-                :name => agent.album_url(album),
+                :name => agent.album_name(album),
                 :band => agent.band_name(album),
                 :format => agent.release_type(album),
-                #:label => 
+                #:label => # TODO: get this
                 :url => agent.album_url(album),
                 :country => agent.country(album),
                 :us_date => agent.release_date(album)
@@ -33,10 +30,6 @@ module MetalDetectr
         end
 
         self.complete_releases_if_finished!
-        # only do this when all the releases are collected
-        #if CompletedStep.finished_fetching_releases? && !CompletedStep.finished_updating_releases_from_amazon?
-        #  self.update_release_dates_from_amazon
-        #end
       end
     end
 
@@ -97,12 +90,8 @@ module MetalDetectr
     # If last album url is a url of a release, it's already looked at all of them.
     # If there is an album url that is nil, don't search for that because it will be a false-positive.
     def self.complete_releases_if_finished!
-      last_album_url = AlbumUrl.try(:last) { |album_url| album_url.url }
-
-      if !CompletedStep.finished_fetching_releases? && last_album_url.present? && Release.exists?(:url => last_album_url)
-        ::Rails.logger.info "\nMetalDetectr::MetalArchives: completed fetching releases"
-        CompletedStep.find_or_create_by_step(CompletedStep::ReleasesCollected)
-      end
+      ::Rails.logger.info "\nMetalDetectr::MetalArchives: completed fetching releases"
+      CompletedStep.find_or_create_by_step(CompletedStep::ReleasesCollected)
     end
 
     # Marks the step of updating the album urls as complete when all the releases have

@@ -3,10 +3,10 @@ class CompletedStep < ActiveRecord::Base
   ReleasesUpdatedFromAmazon = 'releases updated from amazon'
 
   def self.finished_fetching_releases?
-    self.find_by_step(CompletedStep::ReleasesCollected).present?
+    self.where(:step => ReleasesCollected).count > 0
   end
 
   def self.finished_updating_releases_from_amazon?
-    self.find_by_step(CompletedStep::ReleasesUpdatedFromAmazon).present?
+    self.where(:step => ReleasesUpdatedFromAmazon).count > 0
   end
 end

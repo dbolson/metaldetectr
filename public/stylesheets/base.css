@@ -1,0 +1,246 @@
+body {
+  background-color: #000;
+  color: #333;
+  font: 12px Arial, Helvetica, sans-serif;
+  text-align: left;
+}
+
+p {
+  clear: both;
+}
+
+a {
+  color: #ff3300;
+  text-decoration: none;
+}
+
+a:hover {
+  background-color: #ff3300;
+  color: #fff;
+}
+
+ul {
+  list-style-type: none;
+  margin :0;
+  padding: 0;
+}
+
+li {
+  clear: left;
+  margin-bottom: 10px;
+}
+
+label {
+  display: block;
+  font-weight: bold;
+  margin-right: 10px;
+  width: 100px;
+}
+
+table {
+  border-collapse: collapse;
+  color: #000;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+}
+
+table th,
+table td {
+  padding: 4px;
+}
+
+table th {
+  background-color: #666;
+  border-bottom: 3px #fff solid;
+  color: #fff;
+  font-weight: normal;
+}
+
+table th a {
+  color: #fff;
+}
+
+table td {
+  border-bottom: 1px #666 solid;
+}
+
+#main, #footer {
+  background-color: #fff;
+  margin: 0 auto;
+  padding: 10px;
+  width: 970px;
+}
+
+#main #header {
+  float: left;
+  width: 100%;
+}
+
+#main #title {
+  float: left;
+}
+
+#main #title a {
+  color: #666
+}
+
+#main #title a:hover {
+  color: #fff;
+}
+
+/* user login */
+#remember_me_label {
+  display: inline;
+}
+
+#user_actions {
+  float: right;
+  width: 100%;
+}
+
+#user_actions span {
+  float: right;
+  margin-left: 5px;
+}
+
+#notice,
+#alert {
+  background-color: #ff3300;
+  clear: both;
+  color: #fff;
+  font-weight: bold;
+  margin-bottom: 10px;
+  padding: 5px 10px;
+}
+
+/* search form */
+#search {
+  float: right;
+}
+
+#search input {
+  float: left;
+  margin-top: 18px;
+}
+
+#search input#search_input {
+  width: 200px;
+}
+
+#search input#search_submit {
+  margin-left: 5px;
+}
+
+/* pagination */
+.pagination_section {
+  clear: left;
+  margin: 5px 0;
+}
+
+.pagination {
+  float: left;
+  margin-right: 5px;
+}
+
+.pagination_top {
+  float: left;
+}
+
+.pagination_bottom {
+}
+
+.view_release_limits {
+  float: left;
+  margin-right: 5px;
+}
+
+.view_release_limits .selected {
+  text-decoration: underline;
+}
+
+#month_select {
+  float: right;
+}
+
+/* quick-add release form */
+#main #quick_release {
+  border: 1px #666 solid;
+}
+
+/* quick-add release form */
+#main #quick_release {
+  border: 1px #666 solid;
+  clear: both;
+  margin-bottom: 15px;
+  padding: 10px 5px;
+}
+
+#main #quick_release div {
+  display: inline;
+  float left;
+}
+
+#main #quick_release div label {
+  display: inline;
+  float left;
+  margin-right: 3px;
+}
+
+#main #quick_release div input {
+  float left;
+  margin-right: 5px;
+  width: 85px;
+}
+
+#main #quick_release div input#release_submit {
+  margin-left: 0;
+  width: auto;
+}
+
+/* release list */
+.releases tr.even td {
+  background-color: #ddd;
+}
+
+.releases tr.odd td {
+  background-color: #fff;
+}
+
+.releases .edit_band {
+  width: 190px;
+}
+
+.releases .edit_name {
+  width: 250px;
+}
+
+.releases .edit_us_release_date,
+.releases .edit_euro_release_date {
+  width: 75px;
+}
+
+.releases .edit_release_type {
+  width: 85px;
+}
+
+.releases .edit_label {
+  width: 115px;
+}
+
+.releases .edit_url {
+  width: 40px;
+}
+
+#footer {
+  background-color: #333;
+}
+
+/* admin */
+#admin .first {
+  width: 200px;
+}
+
+.releases .editable {
+  cursor: pointer;
+}

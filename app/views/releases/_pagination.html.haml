@@ -1,0 +1,4 @@
+%div{ :class => "pagination_section pagination_#{position}" }
+  = page_entries_info @releases
+  = will_paginate @releases, :page_links => true, :inner_window => 1, :outer_window => 0
+  = pagination_toggle(params)

@@ -1,0 +1,22 @@
+- if admin?
+  = form_for(@release, :html => { :id => 'quick_release' }) do |f|
+    %div
+      = f.label :band
+      = f.text_field :band
+    %div
+      = f.label :name, 'Album'
+      = f.text_field :name
+    %div
+      = f.label :us_date, 'US date'
+      = f.text_field :us_date
+    %div
+      = f.label :euro_date, 'Euro date'
+      = f.text_field :euro_date
+    %div
+      = f.label :format, 'Format'
+      = f.text_field :format
+    %div
+      = f.label :label
+      = f.text_field :label
+    %div
+      = f.submit 'Create'
