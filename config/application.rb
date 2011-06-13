@@ -48,3 +48,6 @@ module Metaldetectr
     config.filter_parameters += [:password]
   end
 end
+
+LASTFM_API_KEY = '02eabadbf626b4e166ff7505bb78cac8'
+LASTFM_API_SECRET = 'a9562ce4bbfcef5935152c5063deb668'

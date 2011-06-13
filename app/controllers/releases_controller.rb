@@ -2,6 +2,10 @@ class ReleasesController < ApplicationController
   respond_to :html, :xml
 
   def index
+    #lastfm = Lastfm.new(LASTFM_API_KEY, LASTFM_API_SECRET)
+    #artists = lastfm.library.get_artists('dbolson11')
+    #render :text => artists[10].inspect and return
+
     @releases = Release.all
     respond_with(@releases)
   end

@@ -14,6 +14,8 @@ gem 'delayed_job'
 gem 'fastercsv'
 gem 'metal-archives', '~> 0.2'
 gem 'amazon-ecs'
+#gem 'lastfm'
+gem 'lastfm', :git => 'git://github.com/dbolson/ruby-lastfm.git', :branch => 'library_get_artists'
 
 group :test do
   gem 'rspec-rails'
