@@ -16,7 +16,7 @@ module ReleasesHelper
   # Creates a link to sort the data of the column name up or down, depending on what's in the params.
   def link_to_sort(column_name, params)
     column_heading = params[:column_name] || column_name.humanize
-    link_to(column_heading, releases_path(
+    link_to(column_heading, root_path(
       :s => column_name,
       :d => reverse_sort_column_direction(params[:d]),
       :p => params[:p],

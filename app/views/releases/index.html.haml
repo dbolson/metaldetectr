@@ -1,9 +1,9 @@
-=# render :partial => 'releases/new_form'
-=# render :partial => 'releases/search'
-=# render :partial => 'releases/pagination', :locals => { :position => 'top' }
+= render :partial => 'releases/new_form'
+= render :partial => 'releases/search'
+= render :partial => 'releases/pagination', :locals => { :position => 'top' }
 
 #month_select
-  =# select_for_release_month
+  = select_for_release_month
 
 = Release.order('us_date ASC').first.us_date.strftime('%B %Y')
 = Release.order('us_date DESC').first.us_date.strftime('%B %Y')
@@ -17,11 +17,11 @@
     %th.edit_release_type= link_to_sort('format', params)
     %th.edit_label= link_to_sort('label', params)
     %th.edit_url URL
-    -# if admin?
+    - if admin?
       %th Actions
 
 %table.releases
   - @releases.each do |release|
     = render release
 
-=# render :partial => 'releases/pagination', :locals => { :position => 'bottom' }
+= render :partial => 'releases/pagination', :locals => { :position => 'bottom' }

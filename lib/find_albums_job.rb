@@ -39,20 +39,13 @@ EDIT: They have it! Well, almost. At New Releases there's an RSS feed with artis
 (b) their algorithm recommends you. Not customisable, unfortunately, but still pretty good.
 =end
 
-    #api_key = '02eabadbf626b4e166ff7505bb78cac8'
-    #api_secret = 'a9562ce4bbfcef5935152c5063deb668'
-    #lastfm = Lastfm.new(api_key, api_secret)
-    #token = lastfm.auth.get_token
-    ##lastfm.session = lastfm.auth.get_session(token)
-    #artists = lastfm.library.get_artists('dbolson11')
 =begin
 find all the lastfm bands
-save name
-each band not checked
+save name if new
+each band
   check if there is a release
     (compare lowercase strings without accents)
     if so, flag release
-  flag band as checked
 
 viewing list
   filter by lastfm bands
