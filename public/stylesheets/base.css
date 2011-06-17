@@ -5,9 +5,11 @@ body {
   text-align: left;
 }
 
+/*
 p {
   clear: both;
 }
+*/
 
 a {
   color: #ff3300;
@@ -19,18 +21,20 @@ a:hover {
   color: #fff;
 }
 
+/*
 ul {
   list-style-type: none;
   margin :0;
   padding: 0;
 }
+*/
 
-li {
-  clear: left;
+.edit_release li {
+  /*clear: left;*/
   margin-bottom: 10px;
 }
 
-label {
+.edit_release label {
   display: block;
   font-weight: bold;
   margin-right: 10px;
@@ -38,10 +42,12 @@ label {
 }
 
 table {
+  /*
   border-collapse: collapse;
   color: #000;
   margin: 0;
   padding: 0;
+  */
   width: 100%;
 }
 
@@ -54,7 +60,6 @@ table th {
   background-color: #666;
   border-bottom: 3px #fff solid;
   color: #fff;
-  font-weight: normal;
 }
 
 table th a {
@@ -72,24 +77,32 @@ table td {
   width: 970px;
 }
 
+#main {
+  margin-top: 10px;
+}
+
 #main #header {
   float: left;
+  margin: 10px 0;
   width: 100%;
 }
 
-#main #title {
+#main h1 {
   float: left;
+  font-size: 20px;
+  font-weight: bold;
 }
 
-#main #title a {
-  color: #666
+#main h1 a {
+  color: #666;
 }
 
-#main #title a:hover {
+#main h1 a:hover {
   color: #fff;
 }
 
-/* user login */
+/*
+/ * user login * /
 #remember_me_label {
   display: inline;
 }
@@ -113,16 +126,19 @@ table td {
   margin-bottom: 10px;
   padding: 5px 10px;
 }
+*/
 
 /* search form */
 #search {
   float: right;
 }
 
+/*
 #search input {
   float: left;
   margin-top: 18px;
 }
+*/
 
 #search input#search_input {
   width: 200px;
@@ -143,12 +159,14 @@ table td {
   margin-right: 5px;
 }
 
+/*
 .pagination_top {
   float: left;
 }
 
 .pagination_bottom {
 }
+*/
 
 .view_release_limits {
   float: left;
@@ -159,16 +177,12 @@ table td {
   text-decoration: underline;
 }
 
+/*
 #month_select {
   float: right;
 }
 
-/* quick-add release form */
-#main #quick_release {
-  border: 1px #666 solid;
-}
-
-/* quick-add release form */
+/ * quick-add release form * /
 #main #quick_release {
   border: 1px #666 solid;
   clear: both;
@@ -197,12 +211,14 @@ table td {
   margin-left: 0;
   width: auto;
 }
+/*
 
 /* release list */
 .releases tr.even td {
   background-color: #ddd;
 }
 
+/*
 .releases tr.odd td {
   background-color: #fff;
 }
@@ -236,7 +252,7 @@ table td {
   background-color: #333;
 }
 
-/* admin */
+/ * admin * /
 #admin .first {
   width: 200px;
 }
@@ -244,3 +260,4 @@ table td {
 .releases .editable {
   cursor: pointer;
 }
+*/
