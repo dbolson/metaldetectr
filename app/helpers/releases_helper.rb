@@ -16,7 +16,7 @@ module ReleasesHelper
   # Creates a link to sort the data of the column name up or down, depending on what's in the params.
   def link_to_sort(column_name, params)
     column_heading = params[:column_name] || column_name.humanize
-    link_to(column_heading, root_path(
+    link_to(column_heading, releases_path(
       :s => column_name,
       :d => reverse_sort_column_direction(params[:d]),
       :p => params[:p],
@@ -35,13 +35,14 @@ module ReleasesHelper
 
   # Creates links to paginate by 20, 50, 100, or all releases.
   def pagination_toggle(params)
-    content_tag(:div, :class => 'view_release_limits') do
-      'View: ' +
+    content_tag(:div,
+      content_tag(:span, 'View:') << ' ' <<
       pagination_link('20', params) << ' ' <<
       pagination_link('50', params) << ' ' <<
       pagination_link('100', params) << ' ' <<
-      pagination_link('all', params)
-    end
+      pagination_link('all', params),
+      :class => 'view_release_limits'
+    )
   end
 
   # Adds the "editable" class if the current user is logged in.
@@ -92,9 +93,9 @@ module ReleasesHelper
   # Creates an anchor tag to paginate the amount_to_paginate and sets the class to selected if it is the currently selected pagination amount.
   # This does not select the "all" option because it does not equal the total amount returned, but that's okay for now.
   def pagination_link(amount_to_paginate, params)
-    content_tag :a,
+    content_tag(:a,
                 amount_to_paginate.to_s.capitalize,
                 :href => releases_path(:p => amount_to_paginate, :start_date => params[:start_date], :end_date => params[:end_date]),
-                :class => params[:p] == amount_to_paginate ? 'selected' : nil
+                :class => params[:p] == amount_to_paginate ? 'selected' : nil)
   end
 end

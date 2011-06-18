@@ -1,2 +1,3 @@
-%h1 Releases#edit
-%p Find me in app/views/releases/edit.html.haml
+%h2= 'Edit Release'
+
+= render :partial => 'form', :locals => { :action => 'Update' }

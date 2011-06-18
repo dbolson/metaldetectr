@@ -28,7 +28,7 @@ describe ReleasesHelper do
       it "should create a link" do
         column_name = 'name'
         params = { :p => 'all', :column_name => 'NAME' }
-        link_to_sort(column_name, params).should == content_tag(:a, 'NAME', :href => root_path(:s => 'name', :d => 'desc', :p => 'all'))
+        link_to_sort(column_name, params).should == content_tag(:a, 'NAME', :href => releases_path(:s => 'name', :d => 'desc', :p => 'all'))
       end
     end
 
@@ -36,7 +36,7 @@ describe ReleasesHelper do
       it "should create a link" do
         column_name = 'name'
         params = { :p => 'all' }
-        link_to_sort(column_name, params).should == content_tag(:a, 'Name', :href => root_path(:s => 'name', :d => 'desc', :p => 'all'))
+        link_to_sort(column_name, params).should == content_tag(:a, 'Name', :href => releases_path(:s => 'name', :d => 'desc', :p => 'all'))
       end
     end
 
@@ -44,7 +44,7 @@ describe ReleasesHelper do
       it "should create a link" do
         column_name = 'name'
         params = { :p => '10' }
-        link_to_sort(column_name, params).should == content_tag(:a, 'Name', :href => root_path(:s => 'name', :d => 'desc', :p => '10'))
+        link_to_sort(column_name, params).should == content_tag(:a, 'Name', :href => releases_path(:s => 'name', :d => 'desc', :p => '10'))
       end
     end
 
@@ -52,7 +52,7 @@ describe ReleasesHelper do
       it "should create a link" do
         column_name = 'name'
         params = { :d => 'asc' }
-        link_to_sort(column_name, params).should == content_tag(:a, 'Name', :href => root_path(:s => 'name', :d => 'desc'))
+        link_to_sort(column_name, params).should == content_tag(:a, 'Name', :href => releases_path(:s => 'name', :d => 'desc'))
       end
     end
 
@@ -60,7 +60,7 @@ describe ReleasesHelper do
       it "should create a link" do
         column_name = 'name'
         params = { :d => 'desc' }
-        link_to_sort(column_name, params).should == content_tag(:a, 'Name', :href => root_path(:s => 'name', :d => 'asc'))
+        link_to_sort(column_name, params).should == content_tag(:a, 'Name', :href => releases_path(:s => 'name', :d => 'asc'))
       end
     end
 
@@ -68,7 +68,7 @@ describe ReleasesHelper do
       it "should create a link" do
         column_name = 'name'
         params = { :search => 'foo' }
-        link_to_sort(column_name, params).should == content_tag(:a, 'Name', :href => root_path(:s => 'name', :d => 'desc', :search => 'foo'))
+        link_to_sort(column_name, params).should == content_tag(:a, 'Name', :href => releases_path(:s => 'name', :d => 'desc', :search => 'foo'))
       end
     end
 
@@ -76,7 +76,7 @@ describe ReleasesHelper do
       it "should create a link" do
         column_name = 'name'
         params = { :d => 'desc', :start_date => '01-02-2010' }
-        link_to_sort(column_name, params).should == content_tag(:a, 'Name', :href => root_path(:s => 'name', :d => 'asc', :start_date => '01-02-2010'))
+        link_to_sort(column_name, params).should == content_tag(:a, 'Name', :href => releases_path(:s => 'name', :d => 'asc', :start_date => '01-02-2010'))
       end
     end
 
@@ -84,7 +84,7 @@ describe ReleasesHelper do
       it "should create a link" do
         column_name = 'name'
         params = { :d => 'desc', :end_date => '01-02-2010' }
-        link_to_sort(column_name, params).should == content_tag(:a, 'Name', :href => root_path(:s => 'name', :d => 'asc', :end_date => '01-02-2010'))
+        link_to_sort(column_name, params).should == content_tag(:a, 'Name', :href => releases_path(:s => 'name', :d => 'asc', :end_date => '01-02-2010'))
       end
     end
   end
@@ -108,10 +108,10 @@ describe ReleasesHelper do
       it "should show a link to view #{results} results per page" do
         params = { :p => results }
         pagination_toggle(params).should == content_tag(:div, :class => 'view_release_limits') do
-          'View: ' +
-          content_tag(:a, :href => '/releases?p=20', :class => results == '20' ? 'selected' : nil) { '20' } + ' ' +
-          content_tag(:a, :href => '/releases?p=50', :class => results == '50' ? 'selected' : nil) { '50' } + ' ' +
-          content_tag(:a, :href => '/releases?p=100', :class => results == '100' ? 'selected' : nil) { '100' } + ' ' +
+          content_tag(:span, 'View:') << ' ' <<
+          content_tag(:a, :href => '/releases?p=20', :class => results == '20' ? 'selected' : nil) { '20' } << ' ' <<
+          content_tag(:a, :href => '/releases?p=50', :class => results == '50' ? 'selected' : nil) { '50' } << ' ' <<
+          content_tag(:a, :href => '/releases?p=100', :class => results == '100' ? 'selected' : nil) { '100' } << ' ' <<
           content_tag(:a, :href => '/releases?p=all', :class => results == 'all' ? 'selected' : nil) { 'All' }
         end
       end
