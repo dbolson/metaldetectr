@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110617040113) do
+ActiveRecord::Schema.define(:version => 20110618162554) do
 
   create_table "completed_steps", :force => true do |t|
     t.string   "step"
@@ -33,6 +33,15 @@ ActiveRecord::Schema.define(:version => 20110617040113) do
 
   add_index "delayed_jobs", ["priority", "run_at"], :name => "delayed_jobs_priority"
 
+  create_table "lastfm_artists", :force => true do |t|
+    t.integer  "user_id"
+    t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "lastfm_artists", ["user_id", "name"], :name => "index_lastfm_artists_on_user_id_and_name", :unique => true
+
   create_table "releases", :force => true do |t|
     t.string   "name"
     t.string   "band"
@@ -45,6 +54,8 @@ ActiveRecord::Schema.define(:version => 20110617040113) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  add_index "releases", ["band"], :name => "index_releases_on_band"
 
   create_table "searched_amazon_date_releases", :force => true do |t|
     t.integer  "release_id"
