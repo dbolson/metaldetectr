@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110618162554) do
+ActiveRecord::Schema.define(:version => 20110619033635) do
 
   create_table "completed_steps", :force => true do |t|
     t.string   "step"
@@ -53,6 +53,7 @@ ActiveRecord::Schema.define(:version => 20110618162554) do
     t.datetime "euro_date"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.boolean  "last_fm",    :default => false
   end
 
   add_index "releases", ["band"], :name => "index_releases_on_band"

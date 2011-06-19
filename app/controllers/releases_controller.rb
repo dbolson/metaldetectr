@@ -2,11 +2,12 @@ class ReleasesController < ApplicationController
   respond_to :html, :xml
 
   def index
-    #lastfm = Lastfm.new(LASTFM_API_KEY, LASTFM_API_SECRET)
-    #artists = lastfm.library.get_artists('dbolson11')
-    #render :text => artists[0..10].inspect and return
+    #LastfmArtist.fetch_artists(current_user)
+    #::Rails.logger.info "\n\nDONE"
 
-    @releases = Release.find_with_params(params)
+    #@releases = Release.find_with_params(params)
+    @releases = Release.paginate(:page => 1, :per_page => 100, :conditions => { :last_fm => true })
+
     #@releases = Release.all
     @release = Release.new
     respond_with(@releases)
