@@ -1,14 +1,15 @@
+# coding: utf-8
 class LastfmArtist < ActiveRecord::Base
   def self.fetch_artists(user)
     lastfm = Lastfm.new(LASTFM_API_KEY, LASTFM_API_SECRET)
     artists = lastfm.library.get_artists(user.lastfm_username)
+
     artists.collect do |artist|
-      album = self.find_or_create_by_name(artist['name'], :user_id => user.id)
-      if release = Release.find_by_band(album.name)
+      lastfm_artist = self.find_or_create_by_name(artist['name'], :user_id => user.id)
+      band = URI.decode(lastfm_artist.name).strip
+      if release = Release.find_by_band(band)
         release.update_attribute(:last_fm, true)
-        ::Rails.logger.info "\nfound: #{album.name}"
-      else
-        ::Rails.logger.info "\ncould not find: #{album.name}"
+        ::Rails.logger.info "\nfound: #{lastfm_artist.name}"
       end
     end
   end
@@ -27,6 +28,7 @@ EDIT: They have it! Well, almost. At New Releases there's an RSS feed with artis
 sync
   find or create
   if band is in big list
+    compare names without encoding
     tag in big list
 
   filter big list by tag

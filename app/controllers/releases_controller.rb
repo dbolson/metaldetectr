@@ -2,11 +2,11 @@ class ReleasesController < ApplicationController
   respond_to :html, :xml
 
   def index
+    #current_user = User.first
     #LastfmArtist.fetch_artists(current_user)
-    #::Rails.logger.info "\n\nDONE"
 
     #@releases = Release.find_with_params(params)
-    @releases = Release.paginate(:page => 1, :per_page => 100, :conditions => { :last_fm => true })
+    @releases = Release.paginate(:page => 1, :per_page => 10, :conditions => { :last_fm => true })
 
     #@releases = Release.all
     @release = Release.new
