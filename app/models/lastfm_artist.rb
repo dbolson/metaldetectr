@@ -9,7 +9,6 @@ class LastfmArtist < ActiveRecord::Base
       band = URI.decode(lastfm_artist.name).strip
       if release = Release.find_by_band(band)
         release.update_attribute(:last_fm, true)
-        ::Rails.logger.info "\nfound: #{lastfm_artist.name}"
       end
     end
   end

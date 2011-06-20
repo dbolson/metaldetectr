@@ -148,6 +148,10 @@ table td {
   margin-left: 5px;
 }
 
+#content {
+  clear: both;
+}
+
 /* pagination */
 .pagination_section {
   clear: left;

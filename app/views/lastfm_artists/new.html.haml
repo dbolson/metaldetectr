@@ -1,0 +1,19 @@
+= form_for(@user, :url => registration_path(@user)) do |f|
+  - @user.errors.full_messages.each do |msg|
+    = msg
+
+  %fieldset
+    %ul
+      %li
+        = f.label :lastfm_username, 'Last.fm username'
+        = f.text_field :lastfm_username
+      %li
+        = f.submit 'Submit'
+
+= form_tag(lastfm_artists_path, :id => 'sync_lastfm') do
+  %fieldset
+    %ul
+      %li
+        = submit_tag 'Sync'
+
+= link_to 'Back', releases_path

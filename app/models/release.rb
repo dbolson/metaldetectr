@@ -26,7 +26,8 @@ class Release < ActiveRecord::Base
     params[:s] ||= 'us_date'
     params[:d] ||= 'desc'
     params[:p] = self.all.count if params[:p].try(:downcase) == 'all'
-    self.paginate(:page => params[:page], :order => "#{params[:s]} #{params[:d]}", :per_page => params[:p])
+    params[:conditions] ||= {}
+    self.paginate(:page => params[:page], :order => "#{params[:s]} #{params[:d]}", :per_page => params[:p], :conditions => params[:conditions])
   end  
 
   def formatted_date(field)
