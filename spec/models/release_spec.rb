@@ -1,6 +1,29 @@
 require 'spec_helper'
 
 describe Release do
+  it "has many lastfm_users" do
+    release = Factory(:release)
+    lastfm_user = Factory(:lastfm_user, :release => release)
+    lastfm_user_2 = Factory(:lastfm_user, :release => release)
+    release.lastfm_users.should == [lastfm_user, lastfm_user_2]
+  end
+
+  describe "#lastfm_user?" do
+    context "without a user" do
+      it "is false"
+    end
+
+    context "with a user" do
+      context "who has a lastfm release" do
+        it "is true"
+      end
+
+      context "who does not have a lastfm release" do
+        it "is false"
+      end
+    end
+  end
+
   context "finds all releases from generic search term" do
     ['name', 'band', 'label'].each do |field|
       context "when term is the #{field}" do

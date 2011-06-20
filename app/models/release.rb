@@ -1,4 +1,6 @@
 class Release < ActiveRecord::Base
+  has_many :lastfm_users
+
   # Finds the releases with a name, band, or label similar to the search term.
   scope :search, lambda { |search_term| {
     :conditions => ['name LIKE ? OR band LIKE ? OR label LIKE ?', "%#{search_term}%", "%#{search_term}%", "%#{search_term}%"]
@@ -27,7 +29,13 @@ class Release < ActiveRecord::Base
     params[:d] ||= 'desc'
     params[:p] = self.all.count if params[:p].try(:downcase) == 'all'
     params[:conditions] ||= {}
-    self.paginate(:page => params[:page], :order => "#{params[:s]} #{params[:d]}", :per_page => params[:p], :conditions => params[:conditions])
+    self.paginate(
+      :page => params[:page],
+      :order => "#{params[:s]} #{params[:d]}",
+      :per_page => params[:p],
+      :conditions => params[:conditions],
+      :include => params[:include]
+    )
   end  
 
   def formatted_date(field)

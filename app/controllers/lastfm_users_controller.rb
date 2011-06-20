@@ -1,4 +1,4 @@
-class LastfmArtistsController < ApplicationController
+class LastfmUsersController < ApplicationController
   before_filter :authenticate_user!, :except => [:index]
   respond_to :html, :xml, :json
 
@@ -8,18 +8,17 @@ class LastfmArtistsController < ApplicationController
   end
 
   def create
-    #render :text => 'lastfm_controller#create' and return
-    #@lastfm_artists = LastfmArtist.fetch_artists(current_user)
+    @lastfm_users = LastfmUser.fetch_artists(current_user)
     @user = current_user
-    @lastfm_artists_count = LastfmArtist.where(:user_id => current_user.id).count
+    @lastfm_users_count = LastfmUser.where(:user_id => current_user.id).count
 
-    #respond_with(@lastfm_artists_count)
+    #respond_with(@lastfm_users_count)
     #render 'new'
 
-    #if @lastfm_artists
+    #if @lastfm_users
     #  respond_to do |format|
     #    format.html { redirect_to(releases_path, :notice => 'Created release.') }
-    #    format.xml  { render :xml => @lastfm_artists, :status => :created, :location => @lastfm_artists }
+    #    format.xml  { render :xml => @lastfm_users, :status => :created, :location => @lastfm_users }
     #  end
     #else
     #  render 'new'

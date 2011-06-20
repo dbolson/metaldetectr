@@ -3,7 +3,7 @@ Metaldetectr::Application.routes.draw do
 
   devise_for :users
   resources :releases
-  resources :lastfm_artists
+  resources :lastfm_users
 
   #get 'users/edit'
   #post 'users/update'

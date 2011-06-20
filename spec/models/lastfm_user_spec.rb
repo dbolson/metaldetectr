@@ -1,4 +1,4 @@
 require 'spec_helper'
 
-describe LastfmArtist do
+describe LastfmUser do
 end

@@ -1,15 +1,19 @@
 # coding: utf-8
-class LastfmArtist < ActiveRecord::Base
+class LastfmUser < ActiveRecord::Base
+  belongs_to :user
+  belongs_to :release
+
   def self.fetch_artists(user)
     lastfm = Lastfm.new(LASTFM_API_KEY, LASTFM_API_SECRET)
     artists = lastfm.library.get_artists(user.lastfm_username)
 
     artists.collect do |artist|
-      lastfm_artist = self.find_or_create_by_name(artist['name'], :user_id => user.id)
-      band = URI.decode(lastfm_artist.name).strip
+      lastfm_artist = self.find_or_initialize_by_name(artist['name'], :user_id => user.id)
+      band = URI.decode(lastfm_artist.name).strip # TODO: make this work (better?)
       if release = Release.find_by_band(band)
-        release.update_attribute(:last_fm, true)
+        lastfm_artist.release_id = release.id
       end
+      lastfm_artist.save
     end
   end
 end

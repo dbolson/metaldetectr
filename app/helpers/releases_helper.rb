@@ -46,12 +46,10 @@ module ReleasesHelper
   end
 
   # Adds the "editable" class if the current user is logged in.
-  def classes_for_release_row(is_admin, release)
-    if is_admin
-      "release_#{release.id} editable"
-    else
-      "release_#{release.id}"
-    end
+  def classes_for_release_row(user=nil, release)
+    classes = "release_#{release.id}" 
+    classes << ' editable' if user.try(:admin?)
+    classes
   end
 
   # Creates a table cell with a class name, content, and title for either inline editing the field or viewing the content
