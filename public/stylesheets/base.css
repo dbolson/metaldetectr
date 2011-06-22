@@ -226,7 +226,14 @@ table td {
 .releases tr.odd td {
   background-color: #fff;
 }
+*/
 
+.releases tr.lastfm td {
+  color: #ff3300;
+  font-weight: bold;
+}
+
+/*
 .releases .edit_band {
   width: 190px;
 }

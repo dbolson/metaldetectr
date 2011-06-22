@@ -3,19 +3,9 @@ class ReleasesController < ApplicationController
   respond_to :html, :xml
 
   def index
-    #@releases = Release.find_with_params(params.merge(:conditions => 'lastfm_users.release_id = releases.id').merge(:include => :lastfm_users))
-    @releases = Release.find_with_params(params)
+    @releases = Release.find_with_params(params.merge(:conditions => 'lastfm_users.release_id = releases.id').merge(:include => :lastfm_users))
+    #@releases = Release.find_with_params(params)
 
-    #@releases = Release.includes(:lastfm_users).where('lastfm_users.release_id = releases.id')
-    #@releases = Release.paginate(
-    #  :per_page => 200,
-    #  :page => 1,
-    #  :include => :lastfm_users,
-    #  :conditions => 'lastfm_users.release_id = releases.id'
-    #)
-
-    #@releases = Release.paginate(:page => 1, :per_page => 10, :conditions => { :last_fm => true })
-    #@releases = Release.all
     @release = Release.new
     respond_with(@releases)
   end

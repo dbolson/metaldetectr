@@ -10,16 +10,28 @@ describe Release do
 
   describe "#lastfm_user?" do
     context "without a user" do
-      it "is false"
+      it "is false" do
+        release = Factory(:release)
+        release.lastfm_user?.should be_false
+      end
     end
 
     context "with a user" do
       context "who has a lastfm release" do
-        it "is true"
+        it "is true" do
+          release = Factory(:release)
+          user = Factory(:user)
+          last_fm_user = Factory(:lastfm_user, :user => user, :release => release)
+          release.lastfm_user?(user).should be_true
+        end
       end
 
       context "who does not have a lastfm release" do
-        it "is false"
+        it "is false" do
+          release = Factory(:release)
+          user = Factory(:user)
+          release.lastfm_user?(user).should be_false
+        end
       end
     end
   end

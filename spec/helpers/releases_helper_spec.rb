@@ -128,26 +128,25 @@ describe ReleasesHelper do
     context "with a signed-in user" do
       context "when the current user is an administrator" do
         it "prints the editable class" do
+          release = mock_model(Release, :id => '20', :lastfm_user? => false)
           user = mock_model(User, :admin? => true)
-          release = mock_model(Release, :id => '20')
-          classes_for_release_row(user, release).should == 'release_20 editable'
+          classes_for_release_row(release, user).should == 'release_20 editable'
         end
       end
 
       context "with a lastfm album" do
         it "prints the lastfm class" do
+          release = mock_model(Release, :id => '20', :lastfm_user? => true)
+          user = mock_model(User, :admin? => true)
+          classes_for_release_row(release, user).should == 'release_20 editable lastfm'
         end
-      end
-
-      context "with no lastfm album" do
-        it "prints the default class"
       end
     end
 
     context "without a signed-in user" do
       it "prints the default class" do
-        release = mock_model(Release, :id => '20')
-        classes_for_release_row(nil, release).should == 'release_20'
+        release = mock_model(Release, :id => '20', :lastfm_user? => false)
+        classes_for_release_row(release).should == 'release_20'
       end
     end
   end

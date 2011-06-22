@@ -45,10 +45,12 @@ module ReleasesHelper
     )
   end
 
-  # Adds the "editable" class if the current user is logged in.
-  def classes_for_release_row(user=nil, release)
+  # Adds the "editable" class if the current user is an admin.
+  # Adds the "lastfm" class if the current user has the release in his lastfm list.
+  def classes_for_release_row(release, user=nil)
     classes = "release_#{release.id}" 
     classes << ' editable' if user.try(:admin?)
+    classes << ' lastfm' if release.lastfm_user?(user)
     classes
   end
 

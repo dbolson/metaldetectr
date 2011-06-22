@@ -1,4 +1,4 @@
-%tr{ :class => "#{classes_for_release_row(admin?, release)} #{cycle('even', 'odd')}" }
+%tr{ :class => "#{classes_for_release_row(release, current_user)} #{cycle('even', 'odd')}" }
   = release_field(:class => 'edit_band', :content => release.band, :is_admin => admin?)
   = release_field(:class => 'edit_name', :content => release.name, :is_admin => admin?)
   = release_field(:class => 'edit_us_date', :content => release.formatted_date(:us_date), :is_admin => admin?)
