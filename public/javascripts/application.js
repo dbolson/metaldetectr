@@ -1,5 +1,6 @@
 $(function() {
-  $('#sync_lastfm').submit(function() {
+  $('#lastfm_sync').submit(function() {
+    /*
     var $form = $(this);
     $.post(
       $form.attr('action'),
@@ -8,6 +9,7 @@ $(function() {
         $form.after(data);
       }
     );
+    */
 
     return false;
   });

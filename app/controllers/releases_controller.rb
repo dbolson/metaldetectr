@@ -3,8 +3,11 @@ class ReleasesController < ApplicationController
   respond_to :html, :xml
 
   def index
-    @releases = Release.find_with_params(params.merge(:conditions => 'lastfm_users.release_id = releases.id').merge(:include => :lastfm_users))
-    #@releases = Release.find_with_params(params)
+    if current_user
+      @releases = Release.find_with_params(params.merge(:conditions => 'lastfm_users.release_id = releases.id').merge(:include => :lastfm_users))
+    else
+      @releases = Release.find_with_params(params)
+    end
 
     @release = Release.new
     respond_with(@releases)

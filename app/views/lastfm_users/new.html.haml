@@ -10,10 +10,10 @@
       %li
         = f.submit 'Submit'
 
-= form_tag(lastfm_users_path, :id => 'sync_lastfm') do
+= form_tag(lastfm_users_path, :id => 'lastfm_sync') do
   %fieldset
     %ul
       %li
         = submit_tag 'Sync'
 
-= link_to 'Back', releases_path
+%div= link_to 'Back', releases_path
