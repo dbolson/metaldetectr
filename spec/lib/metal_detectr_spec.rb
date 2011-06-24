@@ -1,7 +1,65 @@
 require 'spec_helper'
 require 'metal_detectr'
+require 'amazon_search'
 
 describe MetalDetectr do
+  describe "::generating_releases" do
+    context "when finished fetching releases" do
+      before do
+        CompletedStep.stub(:finished_fetching_releases?).and_return(true)
+        @agent = stub('MetalArchives::Agent')
+        MetalArchives::Agent.stub(:new).and_return(@agent)
+      end
+
+      context "when finished updating releases from amazon" do
+        before do
+          CompletedStep.stub(:finished_updating_releases_from_amazon?).and_return(true)
+        end
+
+        it "resets the Metal Archives data already fetched" do
+          CompletedStep.should_receive(:destroy_all)
+          SearchedAmazonDateRelease.should_receive(:destroy_all)
+          MetalDetectr::MetalArchives.generate_releases
+        end
+      end
+
+      context "when still updating releases from amazon" do
+        before do
+          CompletedStep.stub(:finished_updating_releases_from_amazon?).and_return(false)
+        end
+
+        context "with no searched releases" do
+          it "finds all the releases"
+        end
+
+        context "with some searched releases" do
+          it "finds the first release not searched"
+        end
+
+        it "updates the release dates from amazon" do
+          MetalDetectr::AmazonSearch.should_receive(:find_us_date)
+          MetalDetectr::AmazonSearch.should_receive(:find_euro_date)
+          MetalDetectr::MetalArchives.generate_releases
+        end
+      end
+    end
+
+    context "when still fetching releases" do
+      context "while searching the paginated albums" do
+        context "with no band" do
+          it "does nothing"
+        end
+
+        context "with a found band" do
+          it "creates a release"
+        end
+      end
+
+      it "sets the releases collected step to complete"
+    end
+  end
+
+=begin
   describe "fetching paginated result urls" do
     before do
       @agent = stub('MetalArchives::Agent')
@@ -360,4 +418,5 @@ describe MetalDetectr do
       it "should not update the releases"
     end
   end
+=end
 end

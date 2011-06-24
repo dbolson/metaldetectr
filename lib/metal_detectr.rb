@@ -11,6 +11,8 @@ module MetalDetectr
           self.update_release_dates_from_amazon
         end
       else
+        puts "HERE"
+        return
         agent = ::MetalArchives::Agent.new
         agent.paginated_albums.each_with_index do |album_page, index|
           album_page.each do |album|
@@ -25,7 +27,7 @@ module MetalDetectr
                 :us_date => agent.release_date(album)
               )
             end
-            CompletedStep.find_or_create_by_step(CompletedStep::ReleasesCollected)
+            #CompletedStep.find_or_create_by_step(CompletedStep::ReleasesCollected)
           end
         end
 
@@ -42,8 +44,8 @@ module MetalDetectr
       self.release_dates_to_search_from_amazon.each do |release|
         ::Rails.logger.info "Checking Amazon for release #{release.id}."
         begin
-          us_release_date = MetalDetectr::AmazonSearch.find_us_release_date(release)
-          euro_release_date = MetalDetectr::AmazonSearch.find_euro_release_date(release)
+          us_date = MetalDetectr::AmazonSearch.find_us_date(release)
+          euro_date = MetalDetectr::AmazonSearch.find_euro_date(release)
         rescue Exception => e          
           ::Rails.logger.info "Error accessing amazon.com: #{e}"
           SearchedAmazonDateRelease.save_for_later(release)
@@ -51,14 +53,14 @@ module MetalDetectr
         end
 
         attributes_to_update = {}
-        unless us_release_date.nil?
-          Rails.logger.info "updating US release date from amazon.com for #{release.id} to: #{us_release_date.inspect}"
-          attributes_to_update[:us_date] = us_release_date
+        unless us_date.nil?
+          Rails.logger.info "updating US release date from amazon.com for #{release.id} to: #{us_date.inspect}"
+          attributes_to_update[:us_date] = us_date
         end
 
-        unless euro_release_date.nil?
-          Rails.logger.info "updating European release date from amazon.com for #{release.id} to: #{euro_release_date.inspect}"
-          attributes_to_update[:euro_date] = euro_release_date
+        unless euro_date.nil?
+          Rails.logger.info "updating European release date from amazon.com for #{release.id} to: #{euro_date.inspect}"
+          attributes_to_update[:euro_date] = euro_date
         end
         release.update_attributes(attributes_to_update)
 
@@ -82,8 +84,8 @@ module MetalDetectr
     # Erase data used to generate releases for new search for metal-archives.com.
     def self.reset_metal_archives_data
       ::Rails.logger.info "\nCleaning up old data."
-      #CompletedStep.destroy_all
-      #SearchedAmazonDateRelease.destroy_all
+      CompletedStep.destroy_all
+      SearchedAmazonDateRelease.destroy_all
       ::Rails.logger.info "\nData reset."
     end
 
