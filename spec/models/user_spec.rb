@@ -113,4 +113,20 @@ describe User do
       end
     end
   end
+
+  describe "#synced_with_lastfm?" do
+    context "with a lastfm username" do
+      it "is true" do
+        user = Factory(:user, :lastfm_username => 'foo')
+        user.should be_synced_with_lastfm
+      end
+    end
+
+    context "without a lastfm username" do
+      it "is false" do
+        user = Factory(:user)
+        user.should_not be_synced_with_lastfm
+      end
+    end
+  end
 end

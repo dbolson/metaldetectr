@@ -233,13 +233,18 @@ fieldset ul li label {
 /*
 
 /* release list */
-.releases tr.even td {
+.releases tr.even {
   background-color: #ddd;
 }
 
 .releases tr.lastfm td {
   color: #ff3300;
   font-weight: bold;
+}
+
+.releases tr:hover,
+.releases tr.even:hover {
+  background-color: #ffffe0;
 }
 
 /*

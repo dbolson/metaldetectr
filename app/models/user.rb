@@ -34,4 +34,9 @@ class User < ActiveRecord::Base
     clean_up_passwords
     result
   end
+
+  # True if the user is currently synced with lastfm, false otherwise.
+  def synced_with_lastfm?
+    lastfm_username.present?
+  end
 end

@@ -5,20 +5,20 @@ describe ApplicationHelper do
     context "with a notice" do
       it "should show the message" do
         flash[:notice] = 'this is a notice'
-        flash_messages.should == content_tag(:div, :id => 'notice') { 'this is a notice' }
+        helper.flash_messages.should == content_tag(:div, :id => 'notice') { 'this is a notice' }
       end
     end
 
     context "with an alert" do
       it "should show the message" do
         flash[:alert] = 'this is an alert'
-        flash_messages.should == content_tag(:div, :id => 'alert') { 'this is an alert' }
+        helper.flash_messages.should == content_tag(:div, :id => 'alert') { 'this is an alert' }
       end
     end
 
     context "with no message" do
       it "should not show a message" do
-        flash_messages.should be_nil
+        helper.flash_messages.should be_nil
       end
     end
 
@@ -26,7 +26,29 @@ describe ApplicationHelper do
       it "should show the alert message" do
         flash[:notice] = 'this is a notice'
         flash[:alert] = 'this is an alert'
-        flash_messages.should == content_tag(:div, :id => 'alert') { 'this is an alert' }
+        helper.flash_messages.should == content_tag(:div, :id => 'alert') { 'this is an alert' }
+      end
+    end
+  end
+
+  describe "#synced_with_lastfm?" do
+    context "with a user" do
+      context "who is synced with lastfm" do
+        it "is true" do
+          helper.should be_synced_with_lastfm(mock_model(User, :synced_with_lastfm? => true))
+        end
+      end
+
+      context "who is not synced with lastfm" do
+        it "is false" do
+          helper.should_not be_synced_with_lastfm(mock_model(User, :synced_with_lastfm? => false))
+        end
+      end
+    end
+
+    context "without a user" do
+      it "is false" do
+        helper.should_not be_synced_with_lastfm
       end
     end
   end

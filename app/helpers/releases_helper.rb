@@ -50,7 +50,7 @@ module ReleasesHelper
   def classes_for_release_row(release, user=nil)
     classes = "release_#{release.id}" 
     classes << ' editable' if user.try(:admin?)
-    classes << ' lastfm' if release.lastfm_user?(user)
+    classes << ' lastfm' if user.try(:synced_with_lastfm?) && release.lastfm_user?(user)
     classes
   end
 

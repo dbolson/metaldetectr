@@ -5,14 +5,14 @@ describe ReleasesHelper do
     context "collected all releases" do
       it "says it's finished" do
         CompletedStep.stub!(:finished_collecting_metal_archives_releases?).and_return(true)
-        finished_collecting_metal_archives_releases?.should be_true
+        helper.finished_collecting_metal_archives_releases?.should be_true
       end
     end
 
     context "not finished collecting all releases" do
       it "does not say it's finished" do
         CompletedStep.stub!(:finished_collecting_metal_archives_releases?).and_return(false)
-        finished_collecting_metal_archives_releases?.should be_false
+        helper.finished_collecting_metal_archives_releases?.should be_false
       end
     end
   end
@@ -20,7 +20,7 @@ describe ReleasesHelper do
   describe "#reverse_sort_column_direction" do
     context "when set to descending order" do
       it "changes to ascending" do
-        reverse_sort_column_direction('desc').should == 'asc'
+        helper.reverse_sort_column_direction('desc').should == 'asc'
       end
     end
   end
@@ -30,7 +30,7 @@ describe ReleasesHelper do
       it "creates a link" do
         column_name = 'name'
         params = { :p => 'all', :column_name => 'NAME' }
-        link_to_sort(column_name, params).should == content_tag(:a, 'NAME', :href => releases_path(:s => 'name', :d => 'desc', :p => 'all'))
+        helper.link_to_sort(column_name, params).should == content_tag(:a, 'NAME', :href => releases_path(:s => 'name', :d => 'desc', :p => 'all'))
       end
     end
 
@@ -38,7 +38,7 @@ describe ReleasesHelper do
       it "creates a link" do
         column_name = 'name'
         params = { :p => 'all' }
-        link_to_sort(column_name, params).should == content_tag(:a, 'Name', :href => releases_path(:s => 'name', :d => 'desc', :p => 'all'))
+        helper.link_to_sort(column_name, params).should == content_tag(:a, 'Name', :href => releases_path(:s => 'name', :d => 'desc', :p => 'all'))
       end
     end
 
@@ -46,7 +46,7 @@ describe ReleasesHelper do
       it "creates a link" do
         column_name = 'name'
         params = { :p => '10' }
-        link_to_sort(column_name, params).should == content_tag(:a, 'Name', :href => releases_path(:s => 'name', :d => 'desc', :p => '10'))
+        helper.link_to_sort(column_name, params).should == content_tag(:a, 'Name', :href => releases_path(:s => 'name', :d => 'desc', :p => '10'))
       end
     end
 
@@ -54,7 +54,7 @@ describe ReleasesHelper do
       it "creates a link" do
         column_name = 'name'
         params = { :d => 'asc' }
-        link_to_sort(column_name, params).should == content_tag(:a, 'Name', :href => releases_path(:s => 'name', :d => 'desc'))
+        helper.link_to_sort(column_name, params).should == content_tag(:a, 'Name', :href => releases_path(:s => 'name', :d => 'desc'))
       end
     end
 
@@ -62,7 +62,7 @@ describe ReleasesHelper do
       it "creates a link" do
         column_name = 'name'
         params = { :d => 'desc' }
-        link_to_sort(column_name, params).should == content_tag(:a, 'Name', :href => releases_path(:s => 'name', :d => 'asc'))
+        helper.link_to_sort(column_name, params).should == content_tag(:a, 'Name', :href => releases_path(:s => 'name', :d => 'asc'))
       end
     end
 
@@ -70,7 +70,7 @@ describe ReleasesHelper do
       it "creates a link" do
         column_name = 'name'
         params = { :search => 'foo' }
-        link_to_sort(column_name, params).should == content_tag(:a, 'Name', :href => releases_path(:s => 'name', :d => 'desc', :search => 'foo'))
+        helper.link_to_sort(column_name, params).should == content_tag(:a, 'Name', :href => releases_path(:s => 'name', :d => 'desc', :search => 'foo'))
       end
     end
 
@@ -78,7 +78,7 @@ describe ReleasesHelper do
       it "creates a link" do
         column_name = 'name'
         params = { :d => 'desc', :start_date => '01-02-2010' }
-        link_to_sort(column_name, params).should == content_tag(:a, 'Name', :href => releases_path(:s => 'name', :d => 'asc', :start_date => '01-02-2010'))
+        helper.link_to_sort(column_name, params).should == content_tag(:a, 'Name', :href => releases_path(:s => 'name', :d => 'asc', :start_date => '01-02-2010'))
       end
     end
 
@@ -86,7 +86,7 @@ describe ReleasesHelper do
       it "creates a link" do
         column_name = 'name'
         params = { :d => 'desc', :end_date => '01-02-2010' }
-        link_to_sort(column_name, params).should == content_tag(:a, 'Name', :href => releases_path(:s => 'name', :d => 'asc', :end_date => '01-02-2010'))
+        helper.link_to_sort(column_name, params).should == content_tag(:a, 'Name', :href => releases_path(:s => 'name', :d => 'asc', :end_date => '01-02-2010'))
       end
     end
   end
@@ -95,14 +95,14 @@ describe ReleasesHelper do
     context "showing a release with a url" do
       it "links to the url" do
         release = mock_model(Release, :url => '/foo.html')
-        link_to_more(release).should == content_tag(:a, :href => '/foo.html', :target => '_blank') { 'More' }
+        helper.link_to_more(release).should == content_tag(:a, :href => '/foo.html', :target => '_blank') { 'More' }
       end
     end
 
     context "showing a release without a url" do
       it "does not show a link to the url" do
         release = mock_model(Release, :url => nil)
-        link_to_more(release).should be_nil
+        helper.link_to_more(release).should be_nil
       end
     end
   end
@@ -129,16 +129,16 @@ describe ReleasesHelper do
       context "when the current user is an administrator" do
         it "prints the editable class" do
           release = mock_model(Release, :id => '20', :lastfm_user? => false)
-          user = mock_model(User, :admin? => true)
-          classes_for_release_row(release, user).should == 'release_20 editable'
+          user = mock_model(User, :admin? => true).as_null_object
+          helper.classes_for_release_row(release, user).should == 'release_20 editable'
         end
       end
 
       context "with a lastfm album" do
         it "prints the lastfm class" do
           release = mock_model(Release, :id => '20', :lastfm_user? => true)
-          user = mock_model(User, :admin? => true)
-          classes_for_release_row(release, user).should == 'release_20 editable lastfm'
+          user = mock_model(User, :admin? => true).as_null_object
+          helper.classes_for_release_row(release, user).should == 'release_20 editable lastfm'
         end
       end
     end
@@ -146,7 +146,7 @@ describe ReleasesHelper do
     context "without a signed-in user" do
       it "prints the default class" do
         release = mock_model(Release, :id => '20', :lastfm_user? => false)
-        classes_for_release_row(release).should == 'release_20'
+        helper.classes_for_release_row(release).should == 'release_20'
       end
     end
   end
@@ -155,28 +155,28 @@ describe ReleasesHelper do
     context "when the current user is an administrator" do
       it "prints the table cell" do
         params = { :class => 'my_class', :content => 'foo bar', :is_admin => true }
-        release_field(params).should == content_tag(:td, :class => 'my_class', :title => 'click to edit') { 'foo bar' }
+        helper.release_field(params).should == content_tag(:td, :class => 'my_class', :title => 'click to edit') { 'foo bar' }
       end
     end
 
     context "with a truncation length" do
       it "truncates the content" do
         params = { :class => 'my_class', :content => 'foo bar', :is_admin => false, :length => 5 }
-        release_field(params).should == content_tag(:td, :class => 'my_class', :title => 'foo bar') { 'fo...' }
+        helper.release_field(params).should == content_tag(:td, :class => 'my_class', :title => 'foo bar') { 'fo...' }
       end
     end
 
     context "with no content" do
       it "does not have a title or content" do
         params = { :class => 'my_class', :is_admin => false }
-        release_field(params).should == content_tag(:td, :class => 'my_class') {}
+        helper.release_field(params).should == content_tag(:td, :class => 'my_class') {}
       end
     end
 
     context "with content long enough to truncate" do
       it "prints the table cell with no title" do
         params = { :class => 'my_class', :content => 'foo bar 012345678901234567890123456789', :is_admin => false }
-        release_field(params).should == content_tag(:td, :class => 'my_class', :title => 'foo bar 012345678901234567890123456789') do
+        helper.release_field(params).should == content_tag(:td, :class => 'my_class', :title => 'foo bar 012345678901234567890123456789') do
           'foo bar 012345678901234567890123...'
         end
       end
@@ -185,7 +185,7 @@ describe ReleasesHelper do
     context "without content long enough to truncate" do
       it "prints the table cell with no title" do
         params = { :class => 'my_class', :content => 'foo bar', :is_admin => false }
-        release_field(params).should == content_tag(:td, :class => 'my_class') { 'foo bar' }
+        helper.release_field(params).should == content_tag(:td, :class => 'my_class') { 'foo bar' }
       end
     end
   end

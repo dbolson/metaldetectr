@@ -1,9 +1,9 @@
 class Release < ActiveRecord::Base
   has_many :lastfm_users
 
-  # Finds the releases with a name, band, or label similar to the search term.
+  # Finds the releases with a name or band similar to the search term.
   scope :search, lambda { |search_term| {
-    :conditions => ['name LIKE ? OR band LIKE ? OR label LIKE ?', "%#{search_term}%", "%#{search_term}%", "%#{search_term}%"]
+    :conditions => [ 'name LIKE ? OR band LIKE ?', "%#{search_term}%", "%#{search_term}%" ]
   }}
 
   class << self
@@ -27,7 +27,7 @@ class Release < ActiveRecord::Base
     # params[:p] = pagination page
     def find_sorted(params)
       params[:s] ||= 'us_date'
-      params[:d] ||= 'desc'
+      params[:d] ||= 'asc'
       params[:p] = self.all.count if params[:p].try(:downcase) == 'all'
       params[:conditions] ||= {}
       self.paginate(
@@ -40,8 +40,7 @@ class Release < ActiveRecord::Base
     end  
   end
 
-  # True if the release is in the user's lastfm list,
-  # false otherwise.
+  # True if the release is in the user's lastfm list, false otherwise.
   def lastfm_user?(user=nil)
     lastfm_users.any? { |lastfm| lastfm.user_id == user.try(:id) }
   end

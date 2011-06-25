@@ -7,4 +7,9 @@ module ApplicationHelper
       content_tag(:div, :id => 'notice') { flash[:notice] }
     end
   end
+
+  # True if the user is logged in and synced to lastfm, false otherwise.
+  def synced_with_lastfm?(user=nil)
+    user.try(:synced_with_lastfm?)
+  end
 end
