@@ -11,8 +11,6 @@ module MetalDetectr
           self.update_release_dates_from_amazon
         end
       else
-        puts "HERE"
-        return
         agent = ::MetalArchives::Agent.new
         agent.paginated_albums.each_with_index do |album_page, index|
           album_page.each do |album|
@@ -64,7 +62,7 @@ module MetalDetectr
         end
         release.update_attributes(attributes_to_update)
 
-        # this is here because the release-search loop it's in can, and probably will, break at some point because the services times-out,
+        # this is here because the release-search loop it's in can, and probably will, break at some point because the services times out,
         # so we only want to check if we're finished if it doesn't break
         self.complete_release_dates_update_if_finished!(Release.last, release)
       end
