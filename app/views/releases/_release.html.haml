@@ -4,7 +4,7 @@
   = release_field(:class => 'edit_us_date', :content => release.formatted_date(:us_date), :is_admin => admin?)
   = release_field(:class => 'edit_euro_date', :content => release.formatted_date(:euro_date), :is_admin => admin?)
   = release_field(:class => 'edit_format', :content => release.format, :is_admin => admin?, :length => 15)
-  = release_field(:class => 'edit_label', :content => release.label, :is_admin => admin?, :length => 18)
+  =# release_field(:class => 'edit_label', :content => release.label, :is_admin => admin?, :length => 18)
   %td.edit_url= link_to_more release
   - if admin?
     %td

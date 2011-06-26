@@ -4,20 +4,23 @@
 
 -#month_select
   =# select_for_release_month
-%div= link_to 'all albums', '#'
-%div= link_to 'upcoming albums', '#'
-- if synced_with_lastfm?(current_user)
-  %div= link_to 'all lasftm albums', '#'
-  %div= link_to 'upcoming lasftm albums', '#'
+
+%div
+  - options = [['Upcoming', ''], ['All', 'all']]
+  - if synced_with_lastfm?(current_user)
+    - options << ['Upcoming Lastfm', 'lastfm_upcoming']
+    - options << ['All Lastfm', 'lastfm_all']
+  = select_tag(:releases_filter, options_for_select(options, params[:filter]))
+  = label_tag(:releases_filter, 'Filter:', :id => 'releases_filter_label')
 
 %table.releases
   %tr
     %th.edit_band= link_to_sort('band', params)
     %th.edit_name= link_to_sort('name', params)
-    %th.edit_us_release_date= link_to_sort('us_date', params.merge(:column_name => 'US date'))
-    %th.edit_euro_release_date= link_to_sort('euro_date', params.merge(:column_name => 'Euro date'))
+    %th.edit_us_release_date= link_to_sort('us_date', params.merge(:column_name => 'US Release'))
+    %th.edit_euro_release_date= link_to_sort('euro_date', params.merge(:column_name => 'World Release'))
     %th.edit_release_type= link_to_sort('format', params)
-    %th.edit_label= link_to_sort('label', params)
+    -#%th.edit_label= link_to_sort('label', params)
     %th.edit_url URL
     - if admin?
       %th Actions

@@ -178,14 +178,12 @@ fieldset ul li label {
   margin-right: 5px;
 }
 
-/*
 .pagination_top {
   float: left;
 }
 
 .pagination_bottom {
 }
-*/
 
 .view_release_limits {
   float: left;
@@ -194,6 +192,15 @@ fieldset ul li label {
 
 .view_release_limits .selected {
   text-decoration: underline;
+}
+
+#releases_filter {
+  float: right;
+}
+
+#releases_filter_label {
+  float: right;
+  margin: 3px 5px 0 0;
 }
 
 /*
@@ -233,6 +240,10 @@ fieldset ul li label {
 /*
 
 /* release list */
+.releases {
+  clear: both;
+}
+
 .releases tr.even {
   background-color: #ddd;
 }
