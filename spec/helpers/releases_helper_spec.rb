@@ -189,4 +189,48 @@ describe ReleasesHelper do
       end
     end
   end
+
+  describe "#release_filter_select" do
+    it "is wrapped in a div" do
+      helper.release_filter_select(nil).should have_selector('div label#releases_filter_label')
+    end
+
+    it "has a label" do
+      helper.release_filter_select(nil).should have_selector('label#releases_filter_label')
+    end
+
+    it "has 'upcoming' and 'all' options" do
+      options = [['', 'Upcoming'], ['all', 'All']]
+      helper.release_filter_select(nil).should have_selector('select#releases_filter') do |select|
+        select.children.length.should == 2
+        select.children.each_with_index do |child, index|
+          child.attr('value').should == options[index][0]
+          child.children[0].content.should == options[index][1]
+        end
+      end
+    end
+
+    context "with a filter" do
+      it "selects the filter" do
+        helper.release_filter_select(nil, 'all').should have_selector('select#releases_filter option[selected=selected][value=all]')
+      end
+    end
+
+    context "with a user" do
+      context "who is synced with lastfm" do
+        it "has lastfm options" do
+          helper.stub(:synced_with_lastfm?).and_return(true)
+
+          options = [['', 'Upcoming'], ['all', 'All'], ['lastfm_upcoming', 'Upcoming Lastfm'], ['lastfm_all', 'All Lastfm']]
+          helper.release_filter_select(mock_model(User)).should have_selector('select#releases_filter') do |select|
+            select.children.length.should == 4
+            select.children.each_with_index do |child, index|
+              child.attr('value').should == options[index][0]
+              child.children[0].content.should == options[index][1]
+            end
+          end
+        end
+      end
+    end
+  end
 end

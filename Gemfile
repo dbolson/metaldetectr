@@ -22,4 +22,5 @@ group :test do
   gem 'rspec-rails'
   gem 'spork', '~> 0.9.0.rc'
   gem 'watchr'
+  gem 'webrat'
 end

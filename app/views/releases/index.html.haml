@@ -5,13 +5,7 @@
 -#month_select
   =# select_for_release_month
 
-%div
-  - options = [['Upcoming', ''], ['All', 'all']]
-  - if synced_with_lastfm?(current_user)
-    - options << ['Upcoming Lastfm', 'lastfm_upcoming']
-    - options << ['All Lastfm', 'lastfm_all']
-  = select_tag(:releases_filter, options_for_select(options, params[:filter]))
-  = label_tag(:releases_filter, 'Filter:', :id => 'releases_filter_label')
+= release_filter_select(current_user, params[:filter])
 
 %table.releases
   %tr

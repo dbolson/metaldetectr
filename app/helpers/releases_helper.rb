@@ -88,6 +88,13 @@ module ReleasesHelper
     )
   end
 
+  def release_filter_select(user, filter=nil)
+    content_tag(:div) do
+      select_tag(:releases_filter, options_for_select(options_for_release_filter_select(user), filter)) <<
+      label_tag(:releases_filter, 'Filter:', :id => 'releases_filter_label')
+    end
+  end
+
   private
 
   # Creates an anchor tag to paginate the amount_to_paginate and sets the class to selected if it is the currently selected pagination amount.
@@ -97,5 +104,13 @@ module ReleasesHelper
                 amount_to_paginate.to_s.capitalize,
                 :href => releases_path(:p => amount_to_paginate, :start_date => params[:start_date], :end_date => params[:end_date]),
                 :class => params[:p] == amount_to_paginate ? 'selected' : nil)
+  end
+
+  def options_for_release_filter_select(user)
+    options = [['Upcoming', ''], ['All', 'all']]
+    if synced_with_lastfm?(user)
+      options << ['Upcoming Lastfm', 'lastfm_upcoming'] << ['All Lastfm', 'lastfm_all']
+    end
+    options
   end
 end
