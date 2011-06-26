@@ -14,47 +14,29 @@ $(function() {
     return false;
   });
 
-  var $releaseFilter = $('#releases_filter');
-  var $initialFilter = $releaseFilter.attr('value');
+  var filterParam = 'filter='; // url parameter to search for
+  var $releaseFilter = $('#releases_filter'); // select id
+  var $initialFilter = $releaseFilter.attr('value'); // initial value of select
 
   $releaseFilter.change(function() {
     var $thisFilter = $(this).attr('value');
     var href = document.location.href;
 
-    if ($thisFilter != $initialFilter) {
-      var filterPattern = /(&?|\??)filter=(\w*)/;
+    if ($thisFilter != $initialFilter) { // changed to a new select option
+      // ?p=20&filter=all
+      // ?filter=all
+      var filterPattern = new RegExp('(&?|\\??)' + filterParam + '(\\w*)');
+
       if (href.match(filterPattern)) {
+        // keeps arguments in url if they exist or removes the filter param if it should
         document.location.href = href.replace(filterPattern, function(match, optional, filter) {
-          debugger;
-          if ($thisFilter == '') {
-            return '';
-          } else {
-            console.log(optional);
-            return optional + 'filter=' + $thisFilter;
-          }
+          return ($thisFilter == '') ? '' : optional + filterParam + $thisFilter;
         });
-      } else {
+      } else { // no filter param so need to add it along with the filter
         var newFilterSeparator = '';
-        if (href.match(/\?.+/)) {
-          newFilterSeparator = '&';
-        } else {
-          newFilterSeparator = '?';
-        }
-        href += newFilterSeparator + 'filter=' + $thisFilter;
+        newFilterSeparator = (href.match(/\?.+/)) ? '&' : '?'; // add the correct separator to the url
+        document.location.href += newFilterSeparator + filterParam + $thisFilter;
       }
     }
   });
 });
-
-/*
-  if initial != this
-    // changing
-    if this == ''
-      // going to all and remove filter param
-    else
-      if filter pattern
-        replace
-      else
-        add filter
-
-*/

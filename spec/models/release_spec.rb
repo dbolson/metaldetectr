@@ -37,7 +37,7 @@ describe Release do
   end
 
   context "finds all releases from generic search term" do
-    ['name', 'band', 'label'].each do |field|
+    ['name', 'band'].each do |field|
       context "when term is the #{field}" do
         it "should find the releases" do
           release1 = Factory(:release, field.to_sym => 'Foo1')
@@ -50,7 +50,7 @@ describe Release do
   end
 
   context "::find_with_params" do
-    ['name', 'band', 'label'].each do |field|
+    ['name', 'band'].each do |field|
       before do
         Release.delete_all
         @release1 = Factory(:release, field.to_sym => 'Foo1', :us_date => 'January 31st')
@@ -60,20 +60,20 @@ describe Release do
 
       it "should filter by #{field}" do
         params = { :search => 'foo' }
-        Release.find_with_params(params).should == [@release3, @release1]
+        Release.find_with_params(params).should == [@release1, @release3]
       end
 
       context "with field sort" do
         it "should filter by #{field} and sort" do
           params = { :search => 'foo', :s => 'us_date' }
-          Release.find_with_params(params).should == [@release3, @release1]
+          Release.find_with_params(params).should == [@release1, @release3]
         end
       end
 
       context "with field sort" do
         it "should filter by #{field} and sort" do
-          params = { :search => 'foo', :s => 'us_date', :d => 'asc' }
-          Release.find_with_params(params).should == [@release1, @release3]
+          params = { :search => 'foo', :s => 'us_date', :d => 'desc' }
+          Release.find_with_params(params).should == [@release3, @release1]
         end
       end
     end
@@ -85,17 +85,17 @@ describe Release do
         release1 = Factory(:release, :name => 'Zebras', :us_date => 'January 3rd')
         release2 = Factory(:release, :name => 'Albacas', :us_date => 'January 4th')
         release3 = Factory(:release, :name => 'Camels', :us_date => 'January 2nd')
-        Release.find_sorted({}).should == [release2, release1, release3]
+        Release.find_sorted({}).should == [release3, release1, release2]
       end
     end
 
     context "with no direction" do
-      it "should sort in ascending order" do
+      it "should sort in descending order" do
         release1 = Factory(:release, :name => 'Zebras')
         release2 = Factory(:release, :name => 'Albacas')
         release3 = Factory(:release, :name => 'Camels')
         params = { :s => 'name' }
-        Release.find_sorted(params).should == [release1, release3, release2]
+        Release.find_sorted(params).should == [release2, release3, release1]
       end
     end
 
