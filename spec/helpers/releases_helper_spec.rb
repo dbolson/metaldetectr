@@ -112,13 +112,26 @@ describe ReleasesHelper do
       context "shows pagination link to view #{results} results" do
         it "shows a link to view #{results} results per page" do
           params = { :p => results }
-          pagination_toggle(params).should == content_tag(:div, :class => 'view_release_limits') do
+          helper.pagination_toggle(params).should == content_tag(:div, :class => 'view_release_limits') do
             content_tag(:span, 'View:') << ' ' <<
             content_tag(:a, :href => '/releases?p=20', :class => results == '20' ? 'selected' : nil) { '20' } << ' ' <<
             content_tag(:a, :href => '/releases?p=50', :class => results == '50' ? 'selected' : nil) { '50' } << ' ' <<
             content_tag(:a, :href => '/releases?p=100', :class => results == '100' ? 'selected' : nil) { '100' } << ' ' <<
             content_tag(:a, :href => '/releases?p=all', :class => results == 'all' ? 'selected' : nil) { 'All' }
           end
+        end
+      end
+    end
+
+    context "with a filter" do
+      it "shows the filter in the url" do
+        params = { :filter => 'all' }
+        helper.pagination_toggle(params).should == content_tag(:div, :class => 'view_release_limits') do
+          content_tag(:span, 'View:') << ' ' <<
+          content_tag(:a, :href => '/releases?filter=all&p=20' ) { '20' } << ' ' <<
+          content_tag(:a, :href => '/releases?filter=all&p=50') { '50' } << ' ' <<
+          content_tag(:a, :href => '/releases?filter=all&p=100') { '100' } << ' ' <<
+          content_tag(:a, :href => '/releases?filter=all&p=all') { 'All' }
         end
       end
     end

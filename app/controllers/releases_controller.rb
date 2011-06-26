@@ -24,9 +24,7 @@ class ReleasesController < ApplicationController
       options[:conditions] = [ 'us_date >= ?', Time.now.beginning_of_month ]
     end
 
-    ::Rails.logger.info "\n\nparams: #{params.inspect}\n\n"
     @releases = Release.find_with_params(params.merge(options))
-
     @release = Release.new
     respond_with(@releases)
   end

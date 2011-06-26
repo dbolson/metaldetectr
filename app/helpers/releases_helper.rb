@@ -35,6 +35,7 @@ module ReleasesHelper
 
   # Creates links to paginate by 20, 50, 100, or all releases.
   def pagination_toggle(params)
+    ::Rails.logger.info "params: #{params.inspect}"
     content_tag(:div,
       content_tag(:span, 'View:') << ' ' <<
       pagination_link('20', params) << ' ' <<
@@ -103,7 +104,7 @@ module ReleasesHelper
   def pagination_link(amount_to_paginate, params)
     content_tag(:a,
                 amount_to_paginate.to_s.capitalize,
-                :href => releases_path(:p => amount_to_paginate, :start_date => params[:start_date], :end_date => params[:end_date]),
+                :href => releases_path(:p => amount_to_paginate, :start_date => params[:start_date], :end_date => params[:end_date], :filter => params[:filter]),
                 :class => params[:p] == amount_to_paginate ? 'selected' : nil)
   end
 
