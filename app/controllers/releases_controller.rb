@@ -12,19 +12,20 @@ class ReleasesController < ApplicationController
     #  @releases = Release.find_with_params(params)
     #end
 
+    options = {}
     if params[:filter] == 'all'
     elsif params[:filter] == 'lastfm_upcoming'
-      params[:conditions] = [ 'us_date >= ? AND lastfm_users.release_id = releases.id', Time.now.beginning_of_month ]
-      params[:include] = :lastfm_users
+      options[:conditions] = [ 'us_date >= ? AND lastfm_users.release_id = releases.id', Time.now.beginning_of_month ]
+      options[:include] = :lastfm_users
     elsif params[:filter] == 'lastfm_all'
-      params[:conditions] = 'lastfm_users.release_id = releases.id'
-      params[:include] = :lastfm_users
+      options[:conditions] = 'lastfm_users.release_id = releases.id'
+      options[:include] = :lastfm_users
     else # default
-      params[:conditions] = [ 'us_date >= ?', Time.now.beginning_of_month ]
+      options[:conditions] = [ 'us_date >= ?', Time.now.beginning_of_month ]
     end
 
     ::Rails.logger.info "\n\nparams: #{params.inspect}\n\n"
-    @releases = Release.find_with_params(params)
+    @releases = Release.find_with_params(params.merge(options))
 
     @release = Release.new
     respond_with(@releases)

@@ -19,7 +19,19 @@
     - if admin?
       %th Actions
 
+
+  - date = @releases.first.us_date
+  %tr{ :class => cycle('even', 'odd') }
+    %td{ :class => 'month_row', :colspan => 7 }
+      = "#{Date::MONTHNAMES[date.month]} #{date.year}"
+
   - @releases.each do |release|
+    - if release.us_date.month > date.month
+      - date = release.us_date
+      %tr{ :class => cycle('even', 'odd') }
+        %td{ :class => 'month_row', :colspan => 7 }
+          = "#{Date::MONTHNAMES[date.month]} #{date.year}"
+
     = render release
 
 = render :partial => 'releases/pagination', :locals => { :position => 'bottom' }

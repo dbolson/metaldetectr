@@ -88,6 +88,7 @@ module ReleasesHelper
     )
   end
 
+  # Creates a select tag for the filter types to view the releases list.
   def release_filter_select(user, filter=nil)
     content_tag(:div) do
       select_tag(:releases_filter, options_for_select(options_for_release_filter_select(user), filter)) <<

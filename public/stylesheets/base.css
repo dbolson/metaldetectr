@@ -244,6 +244,12 @@ fieldset ul li label {
   clear: both;
 }
 
+.releases tr td.month_row {
+  font-size: 14px;
+  font-weight: bold;
+  text-align: center;
+}
+
 .releases tr.even {
   background-color: #ddd;
 }
