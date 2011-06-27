@@ -135,6 +135,19 @@ describe ReleasesHelper do
         end
       end
     end
+
+    context "with a search term" do
+      it "shows the search term in the url" do
+        params = { :search => 'foo' }
+        helper.pagination_toggle(params).should == content_tag(:div, :class => 'view_release_limits') do
+          content_tag(:span, 'View:') << ' ' <<
+          content_tag(:a, :href => '/releases?p=20&search=foo' ) { '20' } << ' ' <<
+          content_tag(:a, :href => '/releases?p=50&search=foo') { '50' } << ' ' <<
+          content_tag(:a, :href => '/releases?p=100&search=foo') { '100' } << ' ' <<
+          content_tag(:a, :href => '/releases?p=all&search=foo') { 'All' }
+        end
+      end
+    end
   end
 
   describe "#classes_for_release_row" do

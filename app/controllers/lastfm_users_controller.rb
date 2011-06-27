@@ -10,7 +10,7 @@ class LastfmUsersController < ApplicationController
   def create
     @lastfm_users = LastfmUser.fetch_artists(current_user)
     @user = current_user
-    @lastfm_users_count = LastfmUser.where(:user_id => current_user.id).count
+    @lastfm_users_count = @lastfm_users.count
 
     #respond_with(@lastfm_users_count)
     #render 'new'

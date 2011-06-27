@@ -35,7 +35,6 @@ module ReleasesHelper
 
   # Creates links to paginate by 20, 50, 100, or all releases.
   def pagination_toggle(params)
-    ::Rails.logger.info "params: #{params.inspect}"
     content_tag(:div,
       content_tag(:span, 'View:') << ' ' <<
       pagination_link('20', params) << ' ' <<
@@ -80,15 +79,6 @@ module ReleasesHelper
     end
   end
 
-  def select_for_release_month
-    select_tag('release_month',
-      options_for_select([
-        ['October 2010', releases_path(:start_date => '2010-10-01', :end_date => '2010-10-31')],
-        ['September 2010', releases_path(:start_date => '2010-09-01', :end_date => '2010-09-30')]
-      ])
-    )
-  end
-
   # Creates a select tag for the filter types to view the releases list.
   def release_filter_select(user, filter=nil)
     content_tag(:div) do
@@ -102,12 +92,20 @@ module ReleasesHelper
   # Creates an anchor tag to paginate the amount_to_paginate and sets the class to selected if it is the currently selected pagination amount.
   # This does not select the "all" option because it does not equal the total amount returned, but that's okay for now.
   def pagination_link(amount_to_paginate, params)
+    ::Rails.logger.info "params: #{params.inspect}\n\n"
     content_tag(:a,
                 amount_to_paginate.to_s.capitalize,
-                :href => releases_path(:p => amount_to_paginate, :start_date => params[:start_date], :end_date => params[:end_date], :filter => params[:filter]),
+                :href => releases_path(:p => amount_to_paginate,
+                                       :start_date => params[:start_date],
+                                       :end_date => params[:end_date],
+                                       :filter => params[:filter],
+                                       :search => params[:search]
+                                      ),
                 :class => params[:p] == amount_to_paginate ? 'selected' : nil)
   end
 
+  # Creates the options for the relese filter select.
+  # Includes lastfm options if the user has them.
   def options_for_release_filter_select(user)
     options = [['Upcoming', ''], ['All', 'all']]
     if synced_with_lastfm?(user)

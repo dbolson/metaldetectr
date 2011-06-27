@@ -3,18 +3,24 @@ class LastfmUser < ActiveRecord::Base
   belongs_to :user
   belongs_to :release
 
+  # Finds the artists in the user's last.fm library, imports them if they are not already
+  # in his list, and returns the new artists.
   def self.fetch_artists(user)
     lastfm = Lastfm.new(LASTFM_API_KEY, LASTFM_API_SECRET)
-    artists = lastfm.library.get_artists(user.lastfm_username)
+    artists = lastfm.library.get_artists(user.lastfm_username) # TODO: make asyncronous?
 
     artists.collect do |artist|
       lastfm_artist = self.find_or_initialize_by_name(artist['name'], :user_id => user.id)
-      band = URI.decode(lastfm_artist.name).strip # TODO: make this work (better?)
-      if release = Release.find_by_band(band)
-        lastfm_artist.release_id = release.id
+      if lastfm_artist.new_record?
+        band = URI.decode(lastfm_artist.name).strip # TODO: make this work (better?)
+        if release = Release.find_by_band(band)
+          lastfm_artist.release_id = release.id
+        end
+        lastfm_artist.save
+      else
+        nil
       end
-      lastfm_artist.save
-    end
+    end.compact
   end
 end
 

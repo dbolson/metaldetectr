@@ -1,15 +1,20 @@
 $(function() {
   $('#lastfm_sync').submit(function() {
-    /*
     var $form = $(this);
+    var $submitValue = $form.find('input[type=submit]').val();
+
+    $form.find('input[type=submit]').val('Syncing...');
+    $form.find('input[type=submit]').attr('disabled', 'disabled');
+
     $.post(
       $form.attr('action'),
       $form.serialize(),
       function(data) {
-        $form.after(data);
+        $form.find('input[type=submit]').val($submitValue);
+        $form.find('input[type=submit]').attr('disabled', '');
+        $form.find('#sync_success').after(data);
       }
     );
-    */
 
     return false;
   });
@@ -23,6 +28,7 @@ $(function() {
     var href = document.location.href;
 
     if ($thisFilter != $initialFilter) { // changed to a new select option
+      // examples:
       // ?p=20&filter=all
       // ?filter=all
       var filterPattern = new RegExp('(&?|\\??)' + filterParam + '(\\w*)');
