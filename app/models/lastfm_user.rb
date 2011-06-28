@@ -1,7 +1,9 @@
 # coding: utf-8
 class LastfmUser < ActiveRecord::Base
-  belongs_to :user
   belongs_to :release
+  belongs_to :user
+
+  validates :user, :presence => true, :associated => true
 
   # Finds the artists in the user's last.fm library, imports them if they are not already
   # in his list, and returns the new artists.
@@ -10,15 +12,15 @@ class LastfmUser < ActiveRecord::Base
     artists = lastfm.library.get_artists(user.lastfm_username) # TODO: make asyncronous?
 
     artists.collect do |artist|
-      lastfm_artist = self.find_or_initialize_by_name(artist['name'], :user_id => user.id)
+      lastfm_artist = self.find_or_initialize_by_name(artist['name'], :user => user)
+
       if lastfm_artist.new_record?
         band = URI.decode(lastfm_artist.name).strip # TODO: make this work (better?)
         if release = Release.find_by_band(band)
           lastfm_artist.release_id = release.id
+          lastfm_artist.save
+          lastfm_artist
         end
-        lastfm_artist.save
-      else
-        nil
       end
     end.compact
   end
@@ -31,16 +33,6 @@ I'm lazy, big surprise).
 
 EDIT: They have it! Well, almost. At New Releases there's an RSS feed with artists that either (a) you've listened to at some point or
 (b) their algorithm recommends you. Not customisable, unfortunately, but still pretty good.
-=end
-
-=begin
-sync
-  find or create
-  if band is in big list
-    compare names without encoding
-    tag in big list
-
-  filter big list by tag
 =end
 
 =begin
@@ -62,5 +54,3 @@ sync
       ]
     }
 =end
-#user.getTopArtists
-#library.getArtists
