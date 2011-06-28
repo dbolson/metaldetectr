@@ -1,5 +1,3 @@
-require 'csv_generator'
-require 'csv'
 class Admin::CsvsController < ApplicationController
   before_filter :authenticate_admin!
   respond_to :html, :xml
@@ -8,7 +6,7 @@ class Admin::CsvsController < ApplicationController
   end
 
   def create
-    MetalDetectr::CSVGenerator.save(params[:release][:csv])
+    CSVGenerator.save(params[:release][:csv].read)
 
     respond_to do |format|
       format.html {
@@ -18,6 +16,6 @@ class Admin::CsvsController < ApplicationController
   end
 
   def show
-    send_data(MetalDetectr::CSVGenerator.string_for_download, :type => 'text/csv; charset=utf-8; header-present', :filename => "metaldetectr_#{Date.today.to_s}.csv")
+    send_data(CSVGenerator.string_for_download, :type => 'text/csv; charset=utf-8; header-present', :filename => "metaldetectr_#{Date.today.to_s}.csv")
   end
 end

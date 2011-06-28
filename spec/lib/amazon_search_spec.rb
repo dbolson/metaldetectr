@@ -84,7 +84,7 @@ describe MetalDetectr::AmazonSearch do
           MetalDetectr::AmazonSearch.should_receive(:item_search_in_mp3downloads).with(@release, country).and_return(no_results)
         end
         MetalDetectr::AmazonSearch.find_euro_release_date(@release).should be_nil
-      end    
+      end
     end
   end
 end

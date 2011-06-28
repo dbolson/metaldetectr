@@ -1,5 +1,3 @@
-require 'amazon/ecs'
-
 module MetalDetectr
   class AmazonSearch
     Amazon::Ecs.options = {
