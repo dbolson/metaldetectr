@@ -1,8 +1,4 @@
 module ReleasesHelper
-  def admin?
-    true
-  end
-
   # True if all the releases are collected, false otherwise.
   def finished_collecting_metal_archives_releases?
     CompletedStep.finished_collecting_metal_archives_releases?

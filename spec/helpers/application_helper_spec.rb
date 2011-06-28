@@ -52,4 +52,26 @@ describe ApplicationHelper do
       end
     end
   end
+
+  describe "#admin?" do
+    context "when there is no current user" do
+      it "should be false" do
+        helper.admin?(nil).should be_false
+      end
+    end
+
+    context "when the current user is not an administrator" do
+      it "should be false" do
+        user = mock_model(User, :admin? => false)
+        helper.admin?(user).should be_false
+      end
+    end
+
+    context "when the current user is an administrator" do
+      it "should be true" do
+        user = mock_model(User, :admin? => true)
+        helper.admin?(user).should be_true
+      end
+    end
+  end  
 end

@@ -5,6 +5,7 @@ Metaldetectr::Application.routes.draw do
   resources :releases
   resources :lastfm_users
 
-  #get 'users/edit'
-  #post 'users/update'
+  namespace :admin do
+    resources :releases
+  end
 end

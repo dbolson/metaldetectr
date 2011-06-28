@@ -16,7 +16,7 @@
     %th.edit_release_type= link_to_sort('format', params)
     -#%th.edit_label= link_to_sort('label', params)
     %th.edit_url URL
-    - if admin?
+    - if admin?(current_user)
       %th Actions
 
 
