@@ -2,7 +2,7 @@ Metaldetectr::Application.routes.draw do
   root :to => 'releases#index'
 
   devise_for :users
-  get 'releases/index'
+  match 'releases' => 'releases#index', :via => :get
   resources :lastfm_users
 
   namespace :admin do

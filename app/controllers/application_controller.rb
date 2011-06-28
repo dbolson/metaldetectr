@@ -7,7 +7,7 @@ class ApplicationController < ActionController::Base
     unless current_user.admin?
       respond_to do |format|
         format.html { redirect_to(releases_path, :notice => 'You are not allowed access.') }
-        format.xml  { :status => :forbidden }
+        format.xml  { head :forbidden }
       end
       redirect_to root_path
     end
