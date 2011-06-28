@@ -3,7 +3,7 @@ class FindAlbumsJob
   # It next finds all the releases on Amazon's US site and European sites to update the release dates if it can.
   # When all the albums have been searched, delete the obsolete data and send an email about the completion.
   def perform
-    ::MetalDetectr::MetalArchives.generate_releases
+    MetalArchivesFetcher.generate_releases
   end
 
   # Sends an email that says the data for the month is gathered.
