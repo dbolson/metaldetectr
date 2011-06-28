@@ -23,14 +23,16 @@
   - date = @releases.first.us_date
   %tr{ :class => cycle('even', 'odd') }
     %td{ :class => 'month_row', :colspan => 7 }
-      = "#{Date::MONTHNAMES[date.month]} #{date.year}"
+      - if params[:s].nil?
+        = "#{Date::MONTHNAMES[date.month]} #{date.year}"
 
   - @releases.each do |release|
-    - if release.us_date.month > date.month
-      - date = release.us_date
-      %tr{ :class => cycle('even', 'odd') }
-        %td{ :class => 'month_row', :colspan => 7 }
-          = "#{Date::MONTHNAMES[date.month]} #{date.year}"
+    - if params[:s].nil?
+      - if release.us_date.month > date.month
+        - date = release.us_date
+        %tr{ :class => cycle('even', 'odd') }
+          %td{ :class => 'month_row', :colspan => 7 }
+            = "#{Date::MONTHNAMES[date.month]} #{date.year}"
 
     = render release
 
