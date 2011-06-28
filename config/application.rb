@@ -1,7 +1,7 @@
 require File.expand_path('../boot', __FILE__)
 
 require 'rails/all'
-#require 'amazon/ecs'
+require 'amazon/ecs'
 require 'csv'
 
 # If you have a Gemfile, require the gems listed there, including any gems

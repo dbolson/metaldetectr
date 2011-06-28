@@ -1,6 +1,6 @@
 require 'spec_helper'
-require 'metal_detectr'
-require 'find_albums_job'
+#require 'metal_detectr'
+#require 'find_albums_job'
 
 describe FindAlbumsJob do
   describe "#perform" do
