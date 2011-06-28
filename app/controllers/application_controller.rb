@@ -9,7 +9,6 @@ class ApplicationController < ActionController::Base
         format.html { redirect_to(releases_path, :notice => 'You are not allowed access.') }
         format.xml  { head :forbidden }
       end
-      redirect_to root_path
     end
   end
 end
