@@ -1,0 +1,20 @@
+%table#admin
+  %thead
+    %tr
+      %th{ :colspan => '2' }
+        Administration
+  %tbody
+    %tr
+      %td.first Save data to CSV
+      %td
+        = form_tag(admin_csv_path, :method => :get) do
+          = submit_tag 'Export'
+    %tr
+      %td.first Import releases (.csv)
+      %td
+        = form_tag(admin_csvs_path, :multipart => true) do
+          = file_field(:release, :csv)
+          = submit_tag 'Import'
+
+%div
+  = link_to 'Back', releases_path

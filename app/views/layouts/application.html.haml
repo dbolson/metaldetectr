@@ -15,7 +15,8 @@
           - if user_signed_in?
             %span= link_to 'Sign out', destroy_user_session_path
             %span= link_to 'Profile', edit_user_registration_path
-            %span=# link_to 'Administration', admin_index_path
+            - if admin?(current_user)
+              %span= link_to 'Administration', admin_csvs_path
           - else
             = link_to 'Sign in', new_user_session_path
         %h1= link_to 'MetalDetectr', root_path

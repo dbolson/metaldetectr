@@ -294,11 +294,12 @@ fieldset ul li label {
   background-color: #333;
 }
 
-/ * admin * /
+/* admin */
 #admin .first {
-  width: 200px;
+  width: 130px;
 }
 
+/*
 .releases .editable {
   cursor: pointer;
 }

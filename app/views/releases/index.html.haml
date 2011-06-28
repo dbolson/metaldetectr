@@ -2,9 +2,6 @@
 =# render :partial => 'releases/search'
 = render :partial => 'releases/pagination', :locals => { :position => 'top' }
 
--#month_select
-  =# select_for_release_month
-
 = release_filter_select(current_user, params[:filter])
 
 %table.releases
