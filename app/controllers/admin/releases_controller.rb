@@ -1,5 +1,5 @@
 class Admin::ReleasesController < ApplicationController
-  before_filter :authenticate_user!
+  before_filter :authenticate_admin!
   respond_to :html, :xml
 
   def new
