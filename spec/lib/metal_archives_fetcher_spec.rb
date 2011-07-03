@@ -79,6 +79,29 @@ describe MetalArchivesFetcher do
         end
 
         context "with a found band" do
+          context "that already exists" do
+            it "does not save it" do
+              existing_release = mock_model(Release, :name => 'Chaotic World', :band => 'Anonymous Hate')
+              albums = [[
+                "<a href=\"http://www.metal-archives.com/bands/Anonymous_Hate/3540310799\" title=\"Anonymous Hate (BR)\">Anonymous Hate</a>",
+                "<a href=\"http://www.metal-archives.com/albums/Anonymous_Hate/Chaotic_World/302588\">Chaotic World</a>",
+                "Full-length",
+                "April 2011 <!-- 2011-04-00 -->"
+              ]]
+              @agent.should_receive(:paginated_albums).and_return([albums])
+              @agent.stub(:album_name).with(albums[0])
+              @agent.stub(:band_name).with(albums[0])
+              @agent.stub(:release_type).with(albums[0])
+              @agent.stub(:album_url).with(albums[0])
+              @agent.stub(:country).with(albums[0])
+              @agent.stub(:release_date).with(albums[0])
+              lambda do
+                Release.should_receive(:find_or_create_by_name_and_band).and_return(existing_release)
+              end.should_not change(Release, :count).by(1)
+              MetalArchivesFetcher.generate_releases
+            end
+          end
+
           it "creates a release" do
             albums = [[
               "<a href=\"http://www.metal-archives.com/bands/Anonymous_Hate/3540310799\" title=\"Anonymous Hate (BR)\">Anonymous Hate</a>",
@@ -93,7 +116,7 @@ describe MetalArchivesFetcher do
             @agent.should_receive(:album_url).with(albums[0])
             @agent.should_receive(:country).with(albums[0])
             @agent.should_receive(:release_date).with(albums[0])
-            Release.should_receive(:create)
+            Release.should_receive(:find_or_create_by_name_and_band)
             MetalArchivesFetcher.generate_releases
           end
         end

@@ -5,14 +5,13 @@ class AmazonSearch
   }
 
   # Searches amazon.com for the release to find the US release date.
-  def self.find_us_release_date(release)
-    ::Rails.logger.info "AmazonSearch#find_us_release_date"
+  def self.find_us_date(release)
     self.search_response_groups_for_release_date(release)
   end
 
   # Searches various amazon.com local country sites for the release to find the European release date.
   # Priority of countries is United Kingdom, Germany, France.
-  def self.find_euro_release_date(release)
+  def self.find_euro_date(release)
     [:uk, :de, :fr].each do |country|
       results = self.search_response_groups_for_release_date(release, country)
       return results unless results.nil?

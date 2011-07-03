@@ -14,7 +14,7 @@ class MetalArchivesFetcher
       agent.paginated_albums.each_with_index do |album_page, index|
         album_page.each do |album|
           if album[0].match(::MetalArchives::Agent::NO_BAND_REGEXP).nil?
-            Release.create(
+            Release.find_or_create_by_name_and_band(
               :name => agent.album_name(album),
               :band => agent.band_name(album),
               :format => agent.release_type(album),
@@ -41,8 +41,8 @@ class MetalArchivesFetcher
     self.release_dates_to_search_from_amazon.each do |release|
       ::Rails.logger.info "Checking Amazon for release #{release.id}."
       begin
-        us_date = MetalDetectr::AmazonSearch.find_us_date(release)
-        euro_date = MetalDetectr::AmazonSearch.find_euro_date(release)
+        us_date = AmazonSearch.find_us_date(release)
+        euro_date = AmazonSearch.find_euro_date(release)
       rescue Exception => e          
         ::Rails.logger.info "Error accessing amazon.com: #{e}"
         SearchedAmazonDateRelease.save_for_later(release)
@@ -89,7 +89,7 @@ class MetalArchivesFetcher
   # If last album url is a url of a release, it's already looked at all of them.
   # If there is an album url that is nil, don't search for that because it will be a false-positive.
   def self.complete_releases_if_finished!
-    ::Rails.logger.info "\nMetalDetectr::MetalArchives: completed fetching releases"
+    ::Rails.logger.info "\nMetalArchives: completed fetching releases"
     CompletedStep.find_or_create_by_step(CompletedStep::ReleasesCollected)
   end
 
@@ -97,7 +97,7 @@ class MetalArchivesFetcher
   # checked for updated release dates on Amazon.
   def self.complete_release_dates_update_if_finished!(last_release, current_release)
     if last_release.id == current_release.id
-      ::Rails.logger.info "\nMetalDetectr::MetalArchives: completed updating release dates from Amazon"
+      ::Rails.logger.info "\nMetalArchives: completed updating release dates from Amazon"
       CompletedStep.find_or_create_by_step(CompletedStep::ReleasesUpdatedFromAmazon)
     end
   end
