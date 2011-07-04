@@ -5,26 +5,7 @@ class ReleasesController < ApplicationController
   def index
     # usability
     # http://vesess.com/blog/new-usability-enhancements-for-curdbee-filtering-sorting-and-batch-actions/
-
-    #if current_user
-    #  @releases = Release.find_with_params(params.merge(:conditions => 'lastfm_users.release_id = releases.id').merge(:include => :lastfm_users))
-    #else
-    #  @releases = Release.find_with_params(params)
-    #end
-
-    options = {}
-    if params[:filter] == 'all'
-    elsif params[:filter] == 'lastfm_upcoming'
-      options[:conditions] = [ 'us_date >= ? AND lastfm_users.release_id = releases.id', Time.zone.now.beginning_of_month ]
-      options[:include] = :lastfm_users
-    elsif params[:filter] == 'lastfm_all'
-      options[:conditions] = 'lastfm_users.release_id = releases.id'
-      options[:include] = :lastfm_users
-    else # default
-      options[:conditions] = [ 'us_date >= ?', Time.zone.now.beginning_of_month ]
-    end
-
-    @releases = Release.find_with_params(params.merge(options))
+    @releases = Release.find_with_params(params, current_user)
     @release = Release.new
     respond_with(@releases)
   end

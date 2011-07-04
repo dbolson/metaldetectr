@@ -12,7 +12,9 @@ class Release < ActiveRecord::Base
     # params[:s] = sorted name
     # params[:d] = sorted direction
     # params[:p] = pagination page
-    def find_with_params(params)
+    def find_with_params(params, user=nil)
+      params.merge!(options_for_filter(params[:filter], user))
+
       if params[:search].present?
         releases = Release.search(params[:search]).find_sorted(params)
       else
@@ -30,6 +32,7 @@ class Release < ActiveRecord::Base
       params[:d] ||= 'asc'
       params[:p] = self.all.count if params[:p].try(:downcase) == 'all'
       params[:conditions] ||= {}
+
       self.paginate(
         :page => params[:page],
         :order => "#{params[:s]} #{params[:d]}",
@@ -47,5 +50,27 @@ class Release < ActiveRecord::Base
 
   def formatted_date(field)
     self.send(field).strftime('%b %d, %Y') if self.send(field).present?
+  end
+
+  private
+
+  # Sets additional query options based on the filter.
+  def self.options_for_filter(filter, user=nil)
+    options = {}
+    if filter == 'all'
+      # no additional filters
+    elsif filter == 'lastfm_upcoming' && user.try(:synced_with_lastfm?)
+      options[:conditions] = [
+        'releases.us_date >= ? AND lastfm_users.user_id = ?',
+        Time.zone.now.beginning_of_month,
+        user.id
+      ]
+    elsif filter == 'lastfm_all' && user.try(:synced_with_lastfm?)
+      options[:conditions] = [ 'lastfm_users.user_id = ?', user.id ]
+    else # default
+      options[:conditions] = [ 'releases.us_date >= ?', Time.zone.now.beginning_of_month ]
+    end
+    options[:include] = :lastfm_users # always include lastfm_users
+    options
   end
 end
