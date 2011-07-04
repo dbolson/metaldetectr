@@ -16,9 +16,9 @@ class Release < ActiveRecord::Base
       params.merge!(options_for_filter(params[:filter], user))
 
       if params[:search].present?
-        releases = Release.search(params[:search]).find_sorted(params)
+        releases = Release.search(params[:search]).paginate_sorted(params)
       else
-        releases = Release.find_sorted(params)
+        releases = Release.paginate_sorted(params)
       end
       releases
     end
@@ -27,7 +27,7 @@ class Release < ActiveRecord::Base
     # params[:s] = sorted name
     # params[:d] = sorted direction
     # params[:p] = pagination page
-    def find_sorted(params)
+    def paginate_sorted(params)
       params[:s] ||= 'us_date'
       params[:d] ||= 'asc'
       params[:p] = self.all.count if params[:p].try(:downcase) == 'all'

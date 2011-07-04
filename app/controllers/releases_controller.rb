@@ -5,6 +5,7 @@ class ReleasesController < ApplicationController
   def index
     # usability
     # http://vesess.com/blog/new-usability-enhancements-for-curdbee-filtering-sorting-and-batch-actions/
+
     @releases = Release.find_with_params(params, current_user)
     @release = Release.new
     respond_with(@releases)

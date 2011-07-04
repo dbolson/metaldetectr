@@ -105,13 +105,13 @@ describe Release do
     end
   end  
 
-  describe "::find_sorted" do
+  describe "::paginate_sorted" do
     context "with no column" do
       it "should sort by release date" do
         release1 = Factory(:release, :name => 'Zebras', :us_date => 'January 3rd')
         release2 = Factory(:release, :name => 'Albacas', :us_date => 'January 4th')
         release3 = Factory(:release, :name => 'Camels', :us_date => 'January 2nd')
-        Release.find_sorted({}).should == [release3, release1, release2]
+        Release.paginate_sorted({}).should == [release3, release1, release2]
       end
     end
 
@@ -121,7 +121,7 @@ describe Release do
         release2 = Factory(:release, :name => 'Albacas')
         release3 = Factory(:release, :name => 'Camels')
         params = { :s => 'name' }
-        Release.find_sorted(params).should == [release2, release3, release1]
+        Release.paginate_sorted(params).should == [release2, release3, release1]
       end
     end
 
@@ -131,7 +131,7 @@ describe Release do
         release2 = Factory(:release, :name => 'Albacas')
         release3 = Factory(:release, :name => 'Camels')
         params = { :s => 'name', :d => 'asc' }
-        Release.find_sorted(params).should == [release2, release3, release1]
+        Release.paginate_sorted(params).should == [release2, release3, release1]
       end
     end
   end
