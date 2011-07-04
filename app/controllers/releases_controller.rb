@@ -15,17 +15,17 @@ class ReleasesController < ApplicationController
     options = {}
     if params[:filter] == 'all'
     elsif params[:filter] == 'lastfm_upcoming'
-      options[:conditions] = [ 'us_date >= ? AND lastfm_users.release_id = releases.id', Time.now.beginning_of_month ]
+      options[:conditions] = [ 'us_date >= ? AND lastfm_users.release_id = releases.id', Time.zone.now.beginning_of_month ]
       options[:include] = :lastfm_users
     elsif params[:filter] == 'lastfm_all'
       options[:conditions] = 'lastfm_users.release_id = releases.id'
       options[:include] = :lastfm_users
     else # default
-      options[:conditions] = [ 'us_date >= ?', Time.now.beginning_of_month ]
+      options[:conditions] = [ 'us_date >= ?', Time.zone.now.beginning_of_month ]
     end
 
     @releases = Release.find_with_params(params.merge(options))
-    #@release = Release.new
+    @release = Release.new
     respond_with(@releases)
   end
 end

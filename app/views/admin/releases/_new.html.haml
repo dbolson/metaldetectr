@@ -1,5 +1,5 @@
-- if admin?
-  = form_for(@release, :html => { :id => 'quick_release' }) do |f|
+- if admin?(current_user)
+  = form_for([ :admin, @release] , :html => { :id => 'quick_release' }) do |f|
     %div
       = f.label :band
       = f.text_field :band

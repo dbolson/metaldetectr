@@ -5,12 +5,6 @@ body {
   text-align: left;
 }
 
-/*
-p {
-  clear: both;
-}
-*/
-
 a {
   color: #ff3300;
   text-decoration: none;
@@ -28,7 +22,6 @@ h2 {
 }
 
 .edit_release li {
-  /*clear: left;*/
   margin-bottom: 10px;
 }
 
@@ -103,17 +96,12 @@ fieldset ul {
 }
 
 fieldset ul li {
-  /*clear: left;*/
   margin-bottom: 10px;
 }
 
 fieldset ul li label {
   display: block;
   font-weight: bold;
-  /*
-  margin-right: 10px;
-  width: 100px;
-  */
 }
 
 /* user login */
@@ -203,12 +191,7 @@ fieldset ul li label {
   margin: 3px 5px 0 0;
 }
 
-/*
-#month_select {
-  float: right;
-}
-
-/ * quick-add release form * /
+/* quick-add release form */
 #main #quick_release {
   border: 1px #666 solid;
   clear: both;
@@ -237,7 +220,6 @@ fieldset ul li label {
   margin-left: 0;
   width: auto;
 }
-/*
 
 /* release list */
 .releases {
