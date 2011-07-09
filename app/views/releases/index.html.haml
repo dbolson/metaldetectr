@@ -6,13 +6,13 @@
 
 %table.releases
   %tr
-    %th.edit_band= link_to_sort('band', params)
-    %th.edit_name= link_to_sort('name', params)
-    %th.edit_us_release_date= link_to_sort('us_date', params.merge(:column_name => 'US Release'))
-    %th.edit_euro_release_date= link_to_sort('euro_date', params.merge(:column_name => 'World Release'))
-    %th.edit_release_type= link_to_sort('format', params)
-    -#%th.edit_label= link_to_sort('label', params)
-    %th.edit_url URL
+    %th{ :class => header_class('band', params[:s]) }= link_to_sort('band', params)
+    %th{ :class => header_class('name', params[:s]) }= link_to_sort('name', params)
+    %th{ :class => header_class('us_date', params[:s]) }= link_to_sort('us_date', params.merge(:column_name => 'US Release'))
+    %th{ :class => header_class('euro_date', params[:s]) }= link_to_sort('euro_date', params.merge(:column_name => 'World Release'))
+    %th{ :class => header_class('format', params[:s]) }= link_to_sort('format', params)
+    -#%th{ :class => header_class('label', params[:s]) }= link_to_sort('label', params)
+    %th.url_header URL
     - if admin?(current_user)
       %th Actions
 

@@ -259,4 +259,30 @@ describe ReleasesHelper do
       end
     end
   end
+
+  describe "#header_class" do
+    context "with a sort" do
+      context "that matches the name" do
+        it "returns as selected" do
+          helper.header_class('foo', 'foo').should include('selected')
+        end
+      end
+
+      context "that does not match the name" do
+        it "does not return selected" do
+          helper.header_class('foo', 'bar').should_not include('selected')
+        end
+      end
+
+      it "returns the header name" do
+        helper.header_class('foo', 'foo').should include('foo_header')
+      end
+    end
+
+    context "without a sort" do
+      it "returns the header name" do
+        helper.header_class('foo').should == 'foo_header'
+      end
+    end
+  end
 end

@@ -6,6 +6,8 @@ class ReleasesController < ApplicationController
     # usability
     # http://vesess.com/blog/new-usability-enhancements-for-curdbee-filtering-sorting-and-batch-actions/
 
+    # TODO: fix month header for sorting
+
     @releases = Release.find_with_params(params, current_user)
     @release = Release.new
     respond_with(@releases)

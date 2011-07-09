@@ -1,7 +1,7 @@
 body {
   background-color: #000;
   color: #333;
-  font: 12px Arial, Helvetica, sans-serif;
+  font: 14px Arial, Helvetica, sans-serif;
   text-align: left;
 }
 
@@ -39,6 +39,7 @@ table {
 table th,
 table td {
   padding: 4px;
+  padding: 5px 4px;
 }
 
 table th {
@@ -227,7 +228,6 @@ fieldset ul li label {
 }
 
 .releases tr td.month_row {
-  font-size: 14px;
   font-weight: bold;
   text-align: center;
 }
@@ -246,29 +246,37 @@ fieldset ul li label {
   background-color: #ffffe0;
 }
 
+.releases th.selected a {
+  color: #ff3300;
+}
+
+.releases th.selected a:hover {
+  color: #fff;
+}
+
 /*
-.releases .edit_band {
+.releases .band_header {
   width: 190px;
 }
 
-.releases .edit_name {
+.releases .name_header {
   width: 250px;
 }
 
-.releases .edit_us_release_date,
-.releases .edit_euro_release_date {
+.releases .us_date_header,
+.releases .euro_date_header {
   width: 75px;
 }
 
-.releases .edit_release_type {
+.releases .format_header {
   width: 85px;
 }
 
-.releases .edit_label {
+.releases .label_header{
   width: 115px;
 }
 
-.releases .edit_url {
+.releases .url_header {
   width: 40px;
 }
 

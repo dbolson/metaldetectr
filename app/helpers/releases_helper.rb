@@ -83,6 +83,12 @@ module ReleasesHelper
     end
   end
 
+  def header_class(name, sort=nil)
+    results = name + '_header'
+    results << ' selected' if name == sort
+    results
+  end
+
   private
 
   # Creates an anchor tag to paginate the amount_to_paginate and sets the class to selected if it is the currently selected pagination amount.
