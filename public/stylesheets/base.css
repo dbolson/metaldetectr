@@ -227,7 +227,7 @@ fieldset ul li label {
   clear: both;
 }
 
-.releases tr td.month_row {
+.releases tr td.separator_row {
   font-weight: bold;
   text-align: center;
 }

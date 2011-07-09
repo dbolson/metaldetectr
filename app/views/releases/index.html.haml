@@ -16,20 +16,16 @@
     - if admin?(current_user)
       %th Actions
 
-
-  - date = @releases.first.us_date
-  %tr{ :class => cycle('even', 'odd') }
-    %td{ :class => 'month_row', :colspan => 7 }
-      - if params[:s].nil?
-        = "#{Date::MONTHNAMES[date.month]} #{date.year}"
+  - comparison_value = @releases.first.chain_methods(Release::FIELDS_WITH_METHODS[Release.default_sort(params[:s])])
+  = separator_row(comparison_value)
 
   - @releases.each do |release|
-    - if params[:s].nil?
-      - if release.us_date.month > date.month
-        - date = release.us_date
-        %tr{ :class => cycle('even', 'odd') }
-          %td{ :class => 'month_row', :colspan => 7 }
-            = "#{Date::MONTHNAMES[date.month]} #{date.year}"
+    - current_value = release.chain_methods(Release::FIELDS_WITH_METHODS[Release.default_sort(params[:s])])
+    - if Release.values_compared?(current_value, comparison_value, params[:d])
+      - comparison_value = current_value
+      = separator_row(comparison_value)
+    - else
+      - comparison_value = current_value
 
     = render release
 

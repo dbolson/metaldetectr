@@ -136,11 +136,101 @@ describe Release do
     end
   end
 
+  describe "::default_sort" do
+    context "with a sort" do
+      it "is the sort" do
+        Release.default_sort('foo').should == 'foo'
+      end
+    end
+
+    context "with no sort" do
+      it "is 'us_date'" do
+        Release.default_sort(nil).should == 'us_date'
+      end
+    end
+  end
+
+  describe "::comparison_operator" do
+    context "with no direction" do
+      it "is greater than" do
+        Release.comparison_operator(nil).to_s.should == '>'
+      end
+    end
+
+    context "with an ascending direction" do
+      it "is greater than" do
+        Release.comparison_operator('asc').to_s.should == '>'
+      end
+    end
+
+    context "with a descending direction" do
+      it "is less than" do
+        Release.comparison_operator('desc').to_s.should == '<'
+      end
+    end
+  end
+
+  describe "::values_compared?" do
+    context "with no current value" do
+      it "is false" do
+        Release.values_compared?(nil, 'foo', 'asc').should be_false
+      end
+    end
+
+    context "with no comparison value" do
+      it "is false" do
+        Release.values_compared?('foo', nil, 'asc').should be_false
+      end
+    end
+
+    context "with both current and comparison values" do
+      context "and ascending order" do
+        context "and the current value > than the comparison value" do
+          it "is true" do
+            Release.values_compared?('foo', 'bar', 'asc').should be_true
+          end
+        end
+
+        context "and the current value < than the comparison value" do
+          it "is false" do
+            Release.values_compared?('bar', 'foo', 'asc').should be_false
+          end
+        end
+
+        context "and the current value == than the comparison value" do
+          it "is false" do
+            Release.values_compared?('foo', 'foo', 'asc').should be_false
+          end
+        end
+      end
+
+      context "and descending order" do
+        context "and the current value > than the comparison value" do
+          it "is false" do
+            Release.values_compared?('foo', 'bar', 'desc').should be_false
+          end
+        end
+
+        context "and the current value < than the comparison value" do
+          it "is true" do
+            Release.values_compared?('bar', 'foo', 'desc').should be_true
+          end
+        end
+
+        context "and the current value == than the comparison value" do
+          it "is false" do
+            Release.values_compared?('foo', 'foo', 'desc').should be_false
+          end
+        end
+      end
+    end
+  end
+
   describe "#lastfm_user?" do
     context "without a user" do
       it "is false" do
         release = Factory(:release)
-        release.lastfm_user?.should be_false
+        release.lastfm_user?(nil).should be_false
       end
     end
 

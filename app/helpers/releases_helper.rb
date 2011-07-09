@@ -83,10 +83,19 @@ module ReleasesHelper
     end
   end
 
+  # Returns the class of the header from the name along with a selected class based
+  # on the sort parameter.
   def header_class(name, sort=nil)
     results = name + '_header'
     results << ' selected' if name == sort
     results
+  end
+
+  # Creates a row with a full colspan for the value.
+  def separator_row(value)
+    content_tag(:tr, :class => cycle('even', 'odd')) do
+      content_tag(:td, value, :class => 'separator_row', :colspan => 7)
+    end
   end
 
   private

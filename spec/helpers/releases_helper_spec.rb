@@ -285,4 +285,28 @@ describe ReleasesHelper do
       end
     end
   end
+
+  context "#separator_row" do
+    it "has a table row" do
+      helper.separator_row('foo').should have_selector('tr')
+    end
+
+    it "has a class on the table row" do
+      helper.separator_row('foo').should have_selector('td')
+    end
+
+    it "has a fully-spanned table column" do
+      helper.separator_row('foo').should have_selector('td[colspan="7"]')
+    end
+
+    it "has a class on the table column" do
+      helper.separator_row('foo').should have_selector('td.separator_row')
+    end
+
+    it "displays the value" do
+      helper.separator_row('foo').should have_selector('td') do |selector|
+        selector.children[0].content.should == 'foo'
+      end
+    end
+  end
 end

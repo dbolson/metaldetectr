@@ -28,7 +28,7 @@ class Release < ActiveRecord::Base
     # params[:d] = sorted direction
     # params[:p] = pagination page
     def paginate_sorted(params)
-      params[:s] ||= 'us_date'
+      params[:s] = default_sort(params[:s])
       params[:d] ||= 'asc'
       params[:p] = self.all.count if params[:p].try(:downcase) == 'all'
       params[:conditions] ||= {}
@@ -41,13 +41,39 @@ class Release < ActiveRecord::Base
         :include => params[:include]
       )
     end  
+
+    # Sets the sort order to what's passed or us_date.
+    def default_sort(sort)
+      sort || 'us_date'
+    end
+
+    # Sets the comparison operator to be greater than if the direction is nil or ascending,
+    # or less than if the direction is descending.
+    def comparison_operator(direction)
+      (direction.nil? || direction == 'asc') ? :> : :<
+    end
+
+    # True if both value and comparison exist and
+    # if the direction is ascending:
+    #   true if value > comparison, false otherwise
+    # if the direction is descending:
+    #   true if value < comparison, false otherwise
+    def values_compared?(value, comparison, direction)
+      value &&
+      comparison &&
+      value.send(
+        Release.comparison_operator(direction),
+        comparison
+      )
+    end
   end
 
   # True if the release is in the user's lastfm list, false otherwise.
-  def lastfm_user?(user=nil)
+  def lastfm_user?(user)
     lastfm_users.any? { |lastfm| lastfm.user_id == user.try(:id) }
   end
 
+  # If the field exists, format it as a date.
   def formatted_date(field)
     self.send(field).strftime('%b %d, %Y') if self.send(field).present?
   end
@@ -55,7 +81,7 @@ class Release < ActiveRecord::Base
   private
 
   # Sets additional query options based on the filter.
-  def self.options_for_filter(filter, user=nil)
+  def self.options_for_filter(filter, user)
     options = {}
     if filter == 'all'
       # no additional filters
