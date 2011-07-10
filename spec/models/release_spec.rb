@@ -226,6 +226,28 @@ describe Release do
     end
   end
 
+  describe "#chain_methods" do
+    let(:release) { Factory(:release) }
+
+    it "calls the methods on the release" do
+      release.chain_methods([:band, :first]).should == 'S'
+    end
+
+    context "when the release doesn't respond to a method" do
+      context "at the beginning of the list" do
+        it "is nil" do
+          release.chain_methods([:foo, :first]).should be_nil
+        end
+      end
+
+      context "at the end of the list" do
+        it "is the result of the last method that the release respond's to" do
+          release.chain_methods([:band, :bar]).should == 'Slayer'
+        end
+      end
+    end
+  end
+
   describe "#lastfm_user?" do
     context "without a user" do
       it "is false" do
