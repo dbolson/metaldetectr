@@ -308,5 +308,13 @@ describe ReleasesHelper do
         selector.children[0].content.should == 'foo'
       end
     end
+
+    context "with a number value" do
+      it "displays the value as the month" do
+        helper.separator_row(7).should have_selector('td') do |selector|
+          selector.children[0].content.should == 'July'
+        end
+      end
+    end
   end
 end

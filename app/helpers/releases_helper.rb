@@ -93,6 +93,8 @@ module ReleasesHelper
 
   # Creates a row with a full colspan for the value.
   def separator_row(value)
+    value = Date::MONTHNAMES[value] if value.is_a?(Fixnum)
+
     content_tag(:tr, :class => cycle('even', 'odd')) do
       content_tag(:td, value, :class => 'separator_row', :colspan => 7)
     end
