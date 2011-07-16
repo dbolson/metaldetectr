@@ -4,7 +4,7 @@
 
 = release_filter_select(current_user, params[:filter])
 
-%table.releases
+%table#releases{ :class => releases_classes(current_user) }
   %tr
     %th{ :class => header_class('band', params[:s]) }= link_to_sort('band', params)
     %th{ :class => header_class('name', params[:s]) }= link_to_sort('name', params)
@@ -14,18 +14,21 @@
     -#%th{ :class => header_class('label', params[:s]) }= link_to_sort('label', params)
     %th.url_header URL
     - if admin?(current_user)
-      %th Actions
+      %th.action_header Actions
 
-  - comparison_value = @releases.first.chain_methods(Release::FIELDS_WITH_METHODS[Release.default_sort(params[:s])])
-  = separator_row(comparison_value)
+  - if @releases.empty?
+    = separator_row('Your search returned 0 results.')
+  - else
+    - comparison_value = @releases.first.chain_methods(Release::FIELDS_WITH_METHODS[Release.default_sort(params[:s])])
+    = separator_row(comparison_value)
 
-  - @releases.each do |release|
-    - current_value = release.chain_methods(Release::FIELDS_WITH_METHODS[Release.default_sort(params[:s])])
-    - if Release.values_compared?(current_value, comparison_value, params[:d])
-      - comparison_value = current_value
-      = separator_row(comparison_value)
-    - else
-      - comparison_value = current_value
-    = render release
+    - @releases.each do |release|
+      - current_value = release.chain_methods(Release::FIELDS_WITH_METHODS[Release.default_sort(params[:s])])
+      - if Release.values_compared?(current_value, comparison_value, params[:d])
+        - comparison_value = current_value
+        = separator_row(comparison_value)
+      - else
+        - comparison_value = current_value
+      = render release
 
 = render :partial => 'releases/pagination', :locals => { :position => 'bottom' }

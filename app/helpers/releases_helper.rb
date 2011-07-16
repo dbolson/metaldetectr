@@ -100,6 +100,11 @@ module ReleasesHelper
     end
   end
 
+  # If the user is an admin, class the releases table.
+  def releases_classes(user)
+    admin?(user) ? 'admin' : nil
+  end
+
   private
 
   # Creates an anchor tag to paginate the amount_to_paginate and sets the class to selected if it is the currently selected pagination amount.

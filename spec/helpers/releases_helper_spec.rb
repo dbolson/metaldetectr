@@ -317,4 +317,26 @@ describe ReleasesHelper do
       end
     end
   end
+
+  describe "#releases_classes" do
+    context "when user is an admin" do
+      it "has a class 'admin'" do
+        user = mock_model(User, :admin? => true)
+        helper.releases_classes(user).should == 'admin'
+      end
+    end
+
+    context "when user is not an admin" do
+      it "blank" do
+        user = mock_model(User, :admin? => false)
+        helper.releases_classes(user).should be_nil
+      end
+    end
+
+    context "with no user" do
+      it "is blank" do
+        helper.releases_classes(nil).should be_nil
+      end
+    end
+  end
 end

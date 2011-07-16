@@ -38,7 +38,7 @@ table {
 
 table th,
 table td {
-  padding: 4px;
+  overflow: hidden;
   padding: 5px 4px;
 }
 
@@ -130,6 +130,7 @@ fieldset ul li label {
   font-size: 16px;
   margin-bottom: 10px;
   padding: 5px 10px;
+  text-align: center;
 }
 
 /* search form */
@@ -196,6 +197,7 @@ fieldset ul li label {
 #main #quick_release {
   border: 1px #666 solid;
   clear: both;
+  font-size: 12px;
   margin-bottom: 15px;
   padding: 10px 5px;
 }
@@ -223,61 +225,79 @@ fieldset ul li label {
 }
 
 /* release list */
-.releases {
+#releases {
   clear: both;
 }
 
-.releases tr td.separator_row {
+#releases tr td.separator_row {
   font-weight: bold;
   text-align: center;
 }
 
-.releases tr.even {
+#releases tr.even {
   background-color: #ddd;
 }
 
-.releases tr.lastfm td {
+#releases tr.lastfm td {
   color: #ff3300;
   font-weight: bold;
 }
 
-.releases tr:hover,
-.releases tr.even:hover {
+#releases tr:hover,
+#releases tr.even:hover {
   background-color: #ffffe0;
 }
 
-.releases th.selected a {
+#releases th.selected a {
   color: #ff3300;
 }
 
-.releases th.selected a:hover {
+#releases th.selected a:hover {
   color: #fff;
 }
 
-/*
-.releases .band_header {
-  width: 190px;
+#releases .band_header {
+  width: 180px;
 }
 
-.releases .name_header {
-  width: 250px;
+#releases.admin .band_header {
+  width: 160px;
 }
 
-.releases .us_date_header,
-.releases .euro_date_header {
-  width: 75px;
+#releases .name_header {
+  width: 400px;
 }
 
-.releases .format_header {
-  width: 85px;
+#releases.admin .name_header {
+  width: 393px;
 }
 
-.releases .label_header{
-  width: 115px;
+#releases .us_date_header,
+#releases .euro_date_header {
+  width: 95px;
 }
 
-.releases .url_header {
-  width: 40px;
+#releases.admin .us_date_header,
+#releases.admin .euro_date_header {
+  width: 95px;
+}
+
+#releases .format_header {
+  width: 67px;
+}
+
+#releases.admin .format_header {
+}
+
+#releases .url_header {
+  width: 32px;
+}
+
+#releases.admin .url_header {
+}
+
+#releases.admin .action_header {
+  width: 71px;
 }
 
 #footer {
@@ -290,7 +310,7 @@ fieldset ul li label {
 }
 
 /*
-.releases .editable {
+#releases .editable {
   cursor: pointer;
 }
 */
