@@ -1,5 +1,5 @@
-= form_for(@user, :url => registration_path(@user)) do |f|
-  - @user.errors.full_messages.each do |msg|
+= form_for(current_user, :url => registration_path(current_user)) do |f|
+  - current_user.errors.full_messages.each do |msg|
     = msg
 
   %fieldset
