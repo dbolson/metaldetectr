@@ -21,11 +21,10 @@ class Release < ActiveRecord::Base
   # params[:d] = sorted direction
   # params[:p] = pagination page
   def self.find_with_params(params, user=nil)
-    params.merge!(options_for_filter(params[:filter], user))
-
     if params[:search].present?
       releases = Release.search(params[:search]).paginate_sorted(params)
     else
+      params.merge!(options_for_filter(params[:filter], user))
       releases = Release.paginate_sorted(params)
     end
     releases
