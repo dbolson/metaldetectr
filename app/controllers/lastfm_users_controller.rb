@@ -3,8 +3,6 @@ class LastfmUsersController < ApplicationController
   respond_to :html, :xml, :json
 
   def new
-    @user = current_user
-    respond_with(@user)
   end
 
   def create
